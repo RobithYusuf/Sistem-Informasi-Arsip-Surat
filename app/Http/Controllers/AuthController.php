@@ -21,16 +21,17 @@ class AuthController extends Controller
                 return '/admin/dashboard';
             case 'arsiparis':
                 return '/arsiparis/dashboard';
-            case 'pimpinan':
-                return '/pimpinan/dashboard';
+            case 'direktur':
+                return '/direktur/dashboard';
+            case 'user':
+                return '/users/dashboard';
             default:
-                return '/test'; // URL default jika role tidak dikenali
+                return '/home'; // URL default jika role tidak dikenali
         }
     }
 
     public function postLogin(Request $request)
     {
-
         $request->validate(
             [
                 'username' => 'required',
@@ -44,16 +45,21 @@ class AuthController extends Controller
 
         $user = User::where('username', $request->username)->first();
 
-        // Jika username ditemukan
-        if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
-            $redirectUrl = $this->getDashboardUrl(auth()->user()->role->role);
-            return redirect()->to($redirectUrl);
+        // Jika username tidak ditemukan
+        if (!$user) {
+            return redirect()->back()->withErrors(['username' => 'Username tidak ditemukan!']);
         }
 
+        // Jika username ditemukan, tetapi password salah
+        if (!Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
+            return redirect()->back()->withErrors(['password' => 'Password salah!']);
+        }
 
-        // Jika otentikasi gagal karena username, kembali ke halaman login dengan pesan kesalahan username
-        return redirect()->back()->withErrors(['username' => 'Username tidak ditemukan!']);
+        // Jika otentikasi berhasil
+        $redirectUrl = $this->getDashboardUrl(auth()->user()->role->role);
+        return redirect()->to($redirectUrl);
     }
+
 
 
     public function logout()

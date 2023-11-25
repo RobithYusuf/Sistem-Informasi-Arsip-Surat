@@ -24,8 +24,8 @@ class KlasifikasiArsipController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nomor_klasifikasi' => 'required|string|max:50',
-            'nama_klasifikasi' => 'required|string|max:25',
+            'nomor_klasifikasi' => 'required|string|max:255',
+            'nama_klasifikasi' => 'required|string|max:255',
             'daftar_arsip_id' => 'required|integer|exists:daftar_arsip,id_daftar_arsip',
         ]);
 

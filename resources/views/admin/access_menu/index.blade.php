@@ -102,8 +102,10 @@
                                         <span class="badge badge-light-info">{{ strtoupper($accessMenu->role->role) }}</span>
                                         @elseif ($accessMenu->role->role == 'arsiparis')
                                         <span class="badge badge-light-orange">{{ strtoupper($accessMenu->role->role) }}</span>
-                                        @elseif ($accessMenu->role->role == 'pimpinan')
+                                        @elseif ($accessMenu->role->role == 'direktur')
                                         <span class="badge badge-light-violet">{{ strtoupper($accessMenu->role->role) }}</span>
+                                        @elseif ($accessMenu->role->role == 'user')
+                                        <span class="badge badge-light-secondary">{{ strtoupper($accessMenu->role->role) }}</span>
                                         @endif
                                     </td>
 

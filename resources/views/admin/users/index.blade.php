@@ -1,8 +1,8 @@
 @extends('layouts.mastertabel')
-@section('title','Tabel Menu')
+@section('title','Tabel Users')
 @section('content')
 <div class="pagetitle">
-    <h1>Tabel Menu</h1>
+    <h1>Tabel Users</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route(auth()->user()->role->role . '.dashboard') }}">Home</a></li>
@@ -18,47 +18,44 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Data Menu</h5>
-
-
+                    <h5 class="card-title">Datatables</h5>
                     <div class="mb-3 d-flex justify-content-start">
-                        <a href="{{ route('admin.menu.create') }}" class="btn btn-primary rounded-pill">Tambah Menu</a>
+                        <a href="{{ route($currentRoutePrefix . '.users.create') }}" class="btn btn-primary btn-xl">Tambah Data Users</a>
                     </div>
+                    <!-- Table with stripped rows -->
                     @if (session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}
                     </div>
                     @endif
-                    <table class="table datatable">
+                    <table class="table datatable table-striped">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Menu</th>
-                                <th scope="col">URL</th>
-                                <th scope="col">Icon</th>
-                                <th scope="col">Aksi</th>
-
+                                <th scope="col">Nama</th>
+                                <th scope="col">Username</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Aksi</th> <!-- Tambahkan kolom aksi -->
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($menus as $index => $menu)
+                            @foreach($users as $index => $user)
                             <tr>
                                 <th scope="row">{{ $index + 1 }}</th>
-                                <td>{{ $menu->menu }}</td>
-                                <td>{{ $menu->url ?: '-' }}</td>
-                                <td>{{ $menu->icon }}</td>
+                                <td>{{ $user->nama }}</td>
+                                <td>{{ $user->username }}</td>
+                                <td>{{ $user->role->role }}</td>
                                 <td>
                                     <!-- Tombol Edit -->
-                                    <a href="{{ route('admin.menu.edit', $menu) }}" class="btn btn-sm btn-primary">Edit</a>
+                                    <a href="{{ route($currentRoutePrefix .'.users.edit', $user->id) }}" class="btn btn-sm btn-primary">Edit</a>
 
                                     <!-- Tombol Delete -->
-                                    <form action="{{ route('admin.menu.destroy', $menu) }}" method="POST" class="d-inline">
+                                    <form action="{{ route($currentRoutePrefix .'.users.destroy', ['user' => $user->id]) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus?')">Delete</button>
                                     </form>
                                 </td>
-
                             </tr>
                             @endforeach
                         </tbody>

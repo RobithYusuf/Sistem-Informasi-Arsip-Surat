@@ -12,7 +12,10 @@ return new class extends Migration
     public function up()
     {
         Schema::table('user_access_menu', function (Blueprint $table) {
-            $table->foreign('menu_id')->references('id_user_menu')->on('user_menu');
+            $table->foreign('menu_id')
+                  ->references('id_user_menu')
+                  ->on('user_menu')
+                  ->name('user_access_menu_menu_id_foreign'); // Ganti nama constraint
         });
     }
 
@@ -20,10 +23,10 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('user_access_menu', function (Blueprint $table) {
-            //
+            $table->dropForeign('user_access_menu_menu_id_foreign'); // Hapus constraint
         });
     }
 };

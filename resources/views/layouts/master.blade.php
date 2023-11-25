@@ -12,7 +12,6 @@
     <style>
         .footer {
             position: fixed;
-            /* atau position: absolute; */
             bottom: 0;
             width: 85%;
 
@@ -30,7 +29,7 @@
     <!-- ======= Sidebar ======= -->
     @include('layouts.sidebar')
     <!-- End Sidebar-->
-  
+
     <main id="main" class="main">
         @yield('content')
     </main><!-- End #main -->

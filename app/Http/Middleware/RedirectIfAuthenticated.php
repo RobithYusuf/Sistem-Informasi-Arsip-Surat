@@ -32,8 +32,10 @@ class RedirectIfAuthenticated
                 return '/admin/dashboard';
             case 'arsiparis':
                 return '/arsiparis/dashboard';
-            case 'pimpinan':
-                return '/pimpinan/dashboard';
+            case 'direktur':
+                return '/direktur/dashboard';
+            case 'user':
+                return '/users/dashboard';
             default:
                 return '/home';
         }

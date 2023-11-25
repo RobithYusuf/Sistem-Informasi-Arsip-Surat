@@ -182,7 +182,7 @@
                             <thead>
                                 <tr>
                                     <th rowspan="2">#</th>
-                                    <th rowspan="2">Nomor Berkas</th>
+                                    <th rowspan="2">Nomor Arsip</th>
                                     <th rowspan="2">Uraian Berkas</th>
                                     <th rowspan="2">Jumlah</th>
                                     <th rowspan="2">Keamanan Arsip</th>
@@ -193,7 +193,7 @@
                                     <th rowspan="2">Pengarsip</th>
                                     <th rowspan="2">Klasifikasi</th>
                                     <th colspan="3" class="text-center">Lokasi</th>
-                                    <th rowspan="2" class="text-center">Status Arsip</th> <!-- Ini perbaikannya -->
+                                    <th rowspan="2" class="text-center">Status Arsip</th> 
                                 </tr>
                                 <tr>
                                     <th>Lemari</th>
@@ -205,7 +205,7 @@
                                 @foreach($arsips as $index => $arsip)
                                 <tr>
                                     <td>{{ $arsip->id_arsip }}</td>
-                                    <td>{{ $arsip->nomor_berkas }}</td>
+                                    <td>{{ $arsip->nomor_surat }}</td>
                                     <td>{{ $arsip->uraian_berkas }}</td>
                                     <td>{{ $arsip->jumlah }}</td>
                                     <td>{{ $arsip->keamanan_arsip }}</td>
@@ -254,7 +254,7 @@
         var startDate = $('#start_date').val();
         var endDate = $('#end_date').val();
         var status = $('#status_filter').val();
-        var url = "{{ route($currentRoutePrefix . '.laporan.cetak') }}" + "?start_date=" + startDate + "&end_date=" + endDate + "&status_arsip=" + status;
+        var url = "{{ route($currentRoutePrefix . '.laporan.cetak') }}" + "?start_date=" + startDate + "&end_date=" + endDate + "&jenis_arsip=" + status;
         $('#cetak_laporan').attr('href', url);
     }
 

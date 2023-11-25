@@ -1,14 +1,14 @@
 @extends('layouts.mastertabel')
-@section('title','Edit Arsip')
+@section('title','Edit Disposisi')
 @section('content')
 
 <div class="pagetitle">
-    <h1>Form Edit Arsip</h1>
+    <h1>Form Edit Disposisi</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route(auth()->user()->role->role . '.dashboard') }}">Home</a></li>
             <li class="breadcrumb-item">Forms</li>
-            <li class="breadcrumb-item active">Arsip</li>
+            <li class="breadcrumb-item active">Disposisi</li>
         </ol>
     </nav>
 </div><!-- End Page Title -->
@@ -18,7 +18,7 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Edit Arsip</h5>
+                    <h5 class="card-title">Edit Disposisi</h5>
 
                     @if ($errors->any())
                     <div class="alert alert-danger">
@@ -57,23 +57,28 @@
                             </div>
                         </div>
 
-                        <div class="row mb-4">
-                            <label for="kepada" class="col-sm-3 required col-form-label">Kepada</label>
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label">Kepada</label>
                             <div class="col-sm-9">
-                                <select class="form-control" id="kepada" name="kepada[]" multiple>
-                                    @foreach ($users as $user)
-                                    <option value="{{ $user->id }}" {{ in_array($user->id, $selectedUsers) ? 'selected' : '' }}>{{ $user->nama }}</option>
-                                    @endforeach
+                                <select class="form-select" name="kepada" aria-label="Default select example">
+                                    <option value="" disabled>-- Pilih Penerima --</option>
+                                    <option value="Kep. Subbagian Tata Usaha" {{ $arsip->kepada == 'Kep. Subbagian Tata Usaha' ? 'selected' : '' }}>Kep. Subbagian Tata Usaha</option>
+                                    <option value="Kep. Pusat Penelitian, Pengabdian & Penjamin Mutu" {{ $arsip->kepada == 'Kep. Pusat Penelitian, Pengabdian & Penjamin Mutu' ? 'selected' : '' }}>Kep. Pusat Penelitian, Pengabdian & Penjamin Mutu</option>
+                                    <option value="Kor. Prodi Karawitan" {{ $arsip->kepada == 'Kor. Prodi Karawitan' ? 'selected' : '' }}>Kor. Prodi Karawitan</option>
+                                    <option value="Kor. Prodi Seni Kriya" {{ $arsip->kepada == 'Kor. Prodi Seni Kriya' ? 'selected' : '' }}>Kor. Prodi Seni Kriya</option>
+                                    <option value="Kor. Prodi Seni Tari" {{ $arsip->kepada == 'Kor. Prodi Seni Tari' ? 'selected' : '' }}>Kor. Prodi Seni Tari</option>
+                                    <option value="Staff AKN Seni & Budaya Yogyakarta" {{ $arsip->kepada == 'Staff AKN Seni & Budaya Yogyakarta' ? 'selected' : '' }}>Staff AKN Seni dan Budaya Yogyakarta</option>
+                                    <!-- Tambahkan opsi lain yang relevan -->
                                 </select>
-                                <small class="form-text text-muted"> Tahan tombol <b>CTRL</b> untuk memilih lebih dari 1 [Multi Select].</small>
                             </div>
                         </div>
 
+
                         <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label">Sifat Arsip</label>
+                            <label class="col-sm-3 col-form-label">Sifat Disposisi</label>
                             <div class="col-sm-9">
                                 <select class="form-select" name="sifat" aria-label="Default select example">
-                                    <option value="" disabled>-- Pilih Sifat Arsip --</option>
+                                    <option value="" disabled>-- Pilih Sifat Disposisi --</option>
                                     <option value="rahasia" {{ (old('sifat', $arsip->sifat) == 'rahasia') ? 'selected' : '' }}>Rahasia</option>
                                     <option value="biasa" {{ (old('sifat', $arsip->sifat) == 'biasa') ? 'selected' : '' }}>Biasa</option>
                                     <option value="segera" {{ (old('sifat', $arsip->sifat) == 'segera') ? 'selected' : '' }}>Segera</option>
@@ -83,14 +88,14 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="jenis_arsip" class="col-sm-3 col-form-label">Jenis Arsip</label>
+                            <label for="jenis_arsip" class="col-sm-3 col-form-label">Jenis Disposisi</label>
                             <div class="col-sm-9">
                                 <select class="form-select" name="jenis_arsip" id="jenis_arsip">
                                     @php
-                                    $jenisArsipOptions = ['masuk', 'keluar'];
+                                    $jenisDisposisiOptions = ['masuk', 'keluar'];
                                     @endphp
 
-                                    @foreach($jenisArsipOptions as $jenis)
+                                    @foreach($jenisDisposisiOptions as $jenis)
                                     <option value="{{ $jenis }}" {{ $arsip->jenis_arsip == $jenis ? 'selected' : '' }}>{{ ucfirst($jenis) }}</option>
                                     @endforeach
                                 </select>
@@ -100,7 +105,7 @@
 
 
                         <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label">Keamanan Arsip</label>
+                            <label class="col-sm-3 col-form-label">Keamanan Disposisi</label>
                             <div class="col-sm-9">
                                 <select class="form-select" name="keamanan_arsip">
                                     <option value="asli" {{ $arsip->keamanan_arsip == 'asli' ? 'selected' : '' }}>Asli</option>
@@ -129,14 +134,14 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="tanggal_arsip" class="col-sm-3 col-form-label">Tanggal Arsip</label>
+                            <label for="tanggal_arsip" class="col-sm-3 col-form-label">Tanggal Disposisi</label>
                             <div class="col-sm-9">
                                 <input type="date" class="form-control" name="tanggal_arsip" value="{{ $arsip->tanggal_arsip }}" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
-                            <label for="status_arsip" class="col-sm-3 col-form-label">Status Arsip</label>
+                            <label for="status_arsip" class="col-sm-3 col-form-label">Status Disposisi</label>
                             <div class="col-sm-9">
                                 <select class="form-select" name="status_arsip" id="status_arsip">
                                     @php
@@ -158,7 +163,7 @@
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Lokasi Arsip</h5>
+                    <h5 class="card-title">Lokasi Disposisi</h5>
 
                     <div class="row mb-3">
                         <label for="lemari_id" class="col-sm-4 col-form-label">Lemari</label>
@@ -173,7 +178,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label for="rak_id" class="col-sm-4 col-form-label">Rak Arsip</label>
+                        <label for="rak_id" class="col-sm-4 col-form-label">Rak Disposisi</label>
                         <div class="col-sm-8">
                             <select class="form-control" name="rak_id" id="rak_id" required>
                                 <option value="">-- Pilih Rak --</option>
@@ -185,7 +190,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label for="folder_id" class="col-sm-4 col-form-label">Folder Arsip</label>
+                        <label for="folder_id" class="col-sm-4 col-form-label">Folder Disposisi</label>
                         <div class="col-sm-8">
                             <select class="form-control" name="folder_id" id="folder_id" required>
                                 <option value="">-- Pilih Folder --</option>
@@ -201,14 +206,14 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Klasifikasi Arsip</h5>
+                    <h5 class="card-title">Klasifikasi Disposisi</h5>
 
                     <div class="row mb-3">
-                        <label for="klasifikasi_id" class="col-sm-4 col-form-label">Klasifikasi Arsip</label>
+                        <label for="klasifikasi_id" class="col-sm-4 col-form-label">Klasifikasi Disposisi</label>
                         <div class="col-sm-8">
                             <select class="form-control" name="klasifikasi_id" id="klasifikasi_id" required>
-                                <option value="">-- Pilih Klasifikasi Arsip --</option>
-                                @foreach($klasifikasiArsips as $klasifikasi)
+                                <option value="">-- Pilih Klasifikasi Disposisi --</option>
+                                @foreach($klasifikasiDisposisis as $klasifikasi)
                                 <option value="{{ $klasifikasi->id_klasifikasi_arsip }}" {{ $arsip->klasifikasi_id == $klasifikasi->id_klasifikasi_arsip ? 'selected' : '' }}>{{ $klasifikasi->nomor_klasifikasi }} - {{ $klasifikasi->nama_klasifikasi }}</option>
                                 @endforeach
                             </select>
@@ -224,7 +229,7 @@
             <div class="row mb-3 mb-3-start">
                 <div class="col-md-12 d-flex justify-content-start">
                     <a href="{{ route($currentRoutePrefix . '.arsip.index')  }}" class="btn btn-secondary me-2">Kembali</a>
-                    <button type="submit" class="btn btn-primary">Update Arsip</button>
+                    <button type="submit" class="btn btn-primary">Update Disposisi</button>
                 </div>
             </div>
         </div>

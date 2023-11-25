@@ -34,4 +34,16 @@ class User extends Authenticatable
     {
         return $this->role_id;
     }
+
+
+    // many to many relationship
+    public function arsips()
+    {
+        return $this->belongsToMany(Arsip::class, 'arsip_user', 'user_id', 'arsip_id');
+    }
+
+    public function disposisis()
+    {
+        return $this->belongsToMany(Disposisi::class, 'disposisi_user', 'user_id', 'disposisi_id');
+    }
 }

@@ -13,11 +13,10 @@
 
     .custom-table td {
         font-size: 0.8rem;
-
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 150px;
+        max-width: 250px;
     }
 
     .dataTables_wrapper .dataTables_length,
@@ -64,6 +63,7 @@
         object-fit: cover;
     }
 </style>
+
 <div class="pagetitle">
     <h1>Tabel Arsip</h1>
     <nav>
@@ -83,7 +83,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Datatables</h5>
                     <div class="mb-3 d-flex justify-content-start">
-                        <a href="{{ route($currentRoutePrefix . '.arsip.create') }}" class="btn btn-primary rounded-pill  btn-sm">Tambah Arsip</a>
+                        <a href="{{ route($currentRoutePrefix . '.arsip.create') }}" class="btn btn-primary  btn-xl">Tambah Arsip</a>
                     </div>
                     <!-- Table with stripped rows -->
                     @if (session('success'))
@@ -95,15 +95,21 @@
 
                     <ul class="nav nav-tabs mb-4">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#semua" data-toggle="tab">Semua</a>
+                            <a class="nav-link active" href="#semua" data-toggle="tab">Semua ({{ $arsips->count() }})</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#masuk" data-toggle="tab">Masuk</a>
+                            <a class="nav-link" href="#masuk" data-toggle="tab">Masuk ({{ $arsipsMasuk->count() }})</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#keluar" data-toggle="tab">Keluar</a>
+                            <a class="nav-link" href="#keluar" data-toggle="tab">Keluar ({{ $arsipsKeluar->count() }})</a>
                         </li>
                     </ul>
+                    @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                    @endif
+
 
                     <div class="tab-content">
                         <div class="tab-pane active" id="semua">
@@ -112,18 +118,18 @@
                                     <thead>
                                         <tr>
                                             <th rowspan="2">#</th>
-                                            <th rowspan="2">Nomor Berkas</th>
-                                            <th rowspan="2">Uraian Berkas</th>
+                                            <th rowspan="2">Nomor Surat</th>
+                                            <th rowspan="2">Dari</th>
+                                            <th rowspan="2" class="kepada-column">Kepada</th>
+                                            <th rowspan="2">Sifat</th>
                                             <th rowspan="2">Jumlah</th>
+                                            <th rowspan="2" class="text-center">Jenis Arsip</th> <!-- Ini perbaikannya -->
                                             <th rowspan="2">Keamanan Arsip</th>
-                                            <th rowspan="2">Uraian Arsip</th>
-                                            <th rowspan="2">Gambar</th>
+                                            <th rowspan="2">Lampiran</th>
                                             <th rowspan="2">Keterangan</th>
-                                            <th rowspan="2">Tanggal</th>
-                                            <th rowspan="2">Pengarsip</th>
+                                            <th rowspan="2">Tanggal Arsip</th>
                                             <th rowspan="2">Klasifikasi</th>
                                             <th colspan="3" class="text-center">Lokasi</th>
-                                            <!-- <th rowspan="2" class="text-center">Tanggal Keluar</th> -->
                                             <th rowspan="2" class="text-center">Status Arsip</th> <!-- Ini perbaikannya -->
                                             <th rowspan="2" class="text-center">Aksi</th> <!-- Ini perbaikannya -->
                                         </tr>
@@ -134,33 +140,50 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($arsips as $index => $arsip)
+                                        @forelse($arsips as $index => $arsip)
                                         <tr>
                                             <td>{{ $arsip->id_arsip }}</td>
-                                            <td>{{ $arsip->nomor_berkas }}</td>
-                                            <td>{{ $arsip->uraian_berkas }}</td>
-                                            <td>{{ $arsip->jumlah }}</td>
-                                            <td>{{ $arsip->keamanan_arsip }}</td>
-                                            <td>{{ $arsip->uraian_arsip }}</td>
-                                            <td class="text-center">
-                                                <a href="{{ asset('storage/gambar/' . basename($arsip->gambar)) }}" target="_blank" class="thumbnail-link">
-                                                    <img src="{{ asset('storage/gambar/' . $arsip->gambar) }}" alt="Gambar Arsip" width="100" class="img-thumbnail"> <!-- Anda bisa mengatur width sesuai kebutuhan -->
+                                            <td>{{ $arsip->nomor_surat }}</td>
+                                            <td>{{ $arsip->dari }}</td>
+                                            <td>
+                                                @foreach ($arsip->users as $user)
+                                                {{ $user->nama }}<br>
+                                                <!-- @if (!$loop->last),@endif -->
+                                                @endforeach
                                             </td>
 
+                                            <td>{{ $arsip->sifat }}</td>
+                                            <td>{{ $arsip->jumlah }}</td>
+                                            <td class="text-center">
+                                                @if($arsip->jenis_arsip == 'masuk')
+                                                <span class="badge bg-success">{{ strtoupper($arsip->jenis_arsip) }}</span>
+                                                @elseif($arsip->jenis_arsip == 'keluar')
+                                                <span class="badge bg-danger">{{ strtoupper($arsip->jenis_arsip) }}</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ $arsip->keamanan_arsip }}</td>
+                                            <td class="text-center">
+                                                <a href="{{ asset('storage/lampiran/' . basename($arsip->lampiran)) }}" target="_blank" class="thumbnail-link">
+                                                    <img src="{{ asset('storage/lampiran/' . $arsip->lampiran) }}" alt="lampiran Arsip" width="100" class="img-thumbnail"> <!-- Anda bisa mengatur width sesuai kebutuhan -->
+                                            </td>
                                             <td>{{ $arsip->keterangan }}</td>
-                                            <td>{{ $arsip->tanggal }}</td>
-                                            <td>{{ $arsip->user->nama }}</td>
+                                            <td>{{ $arsip->tanggal_arsip }}</td>
                                             <td>{{ $arsip->klasifikasi->nomor_klasifikasi }} - {{ $arsip->klasifikasi->daftarArsip->nama_daftar }}</td>
                                             <td class="text-center">{{ $arsip->lemari->lemari }}</td> <!-- Kolom Lemari -->
                                             <td class="text-center">{{ $arsip->rak->rak }}</td> <!-- Kolom Rak -->
                                             <td class="text-center">{{ $arsip->folder->folder }}</td> <!-- Kolom Folder -->
                                             <!-- <td>{{ $arsip->updated_at }}</td> -->
                                             <td class="text-center">
-                                                @if($arsip->status_arsip == 'masuk')
+                                                @if($arsip->status_arsip == 'diproses')
+                                                <span class="badge bg-primary">{{ strtoupper($arsip->status_arsip) }}</span>
+                                                @elseif($arsip->status_arsip == 'selesai')
                                                 <span class="badge bg-success">{{ strtoupper($arsip->status_arsip) }}</span>
-                                                @elseif($arsip->status_arsip == 'keluar')
+                                                @elseif($arsip->status_arsip == 'palsu')
                                                 <span class="badge bg-danger">{{ strtoupper($arsip->status_arsip) }}</span>
-
+                                                @elseif($arsip->status_arsip == 'meragukan')
+                                                <span class="badge bg-warning">{{ strtoupper($arsip->status_arsip) }}</span>
+                                                @elseif($arsip->status_arsip == 'disposisi')
+                                                <span class="badge bg-info">{{ strtoupper($arsip->status_arsip) }}</span>
                                                 @endif
                                             </td>
 
@@ -175,26 +198,32 @@
                                                 </form>
                                             </td>
                                         </tr>
-                                        @endforeach
+                                        @empty
+                                        <tr>
+                                            <td colspan="17" class="text-center">Data Kosong</td>
+                                        </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+                        <!-- masuk -->
                         <div class="tab-pane" id="masuk">
                             <div class="table-responsive">
                                 <table class="table datatable table-bordered table-striped custom-table">
                                     <thead>
                                         <tr>
                                             <th rowspan="2">#</th>
-                                            <th rowspan="2">Nomor Berkas</th>
-                                            <th rowspan="2">Uraian Berkas</th>
+                                            <th rowspan="2">Nomor Surat</th>
+                                            <th rowspan="2">Dari</th>
+                                            <th rowspan="2">Kepada</th>
+                                            <th rowspan="2">Sifat</th>
                                             <th rowspan="2">Jumlah</th>
+                                            <th rowspan="2" class="text-center">Jenis Arsip</th> <!-- Ini perbaikannya -->
                                             <th rowspan="2">Keamanan Arsip</th>
-                                            <th rowspan="2">Uraian Arsip</th>
-                                            <th rowspan="2">Gambar</th>
+                                            <th rowspan="2">Lampiran</th>
                                             <th rowspan="2">Keterangan</th>
-                                            <th rowspan="2">Tanggal</th>
-                                            <th rowspan="2">Pengarsip</th>
+                                            <th rowspan="2">Tanggal Arsip</th>
                                             <th rowspan="2">Klasifikasi</th>
                                             <th colspan="3" class="text-center">Lokasi</th>
                                             <th rowspan="2" class="text-center">Status Arsip</th> <!-- Ini perbaikannya -->
@@ -207,32 +236,50 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($arsipsMasuk as $index => $arsip)
+                                        @forelse($arsipsMasuk as $index => $arsip)
                                         <tr>
                                             <td>{{ $arsip->id_arsip }}</td>
-                                            <td>{{ $arsip->nomor_berkas }}</td>
-                                            <td>{{ $arsip->uraian_berkas }}</td>
-                                            <td>{{ $arsip->jumlah }}</td>
-                                            <td>{{ $arsip->keamanan_arsip }}</td>
-                                            <td>{{ $arsip->uraian_arsip }}</td>
-                                            <td class="text-center">
-                                                <a href="{{ asset('storage/gambar/' . basename($arsip->gambar)) }}" target="_blank" class="thumbnail-link">
-                                                    <img src="{{ asset('storage/gambar/' . $arsip->gambar) }}" alt="Gambar Arsip" width="100" class="img-thumbnail"> <!-- Anda bisa mengatur width sesuai kebutuhan -->
+                                            <td>{{ $arsip->nomor_surat }}</td>
+                                            <td>{{ $arsip->dari }}</td>
+                                            <td>
+                                                @foreach ($arsip->users as $user)
+                                                {{ $user->nama }}<br>
+                                                <!-- @if (!$loop->last),@endif -->
+                                                @endforeach
                                             </td>
 
-                                            <td>{{ $arsip->keterangan }}</td>
-                                            <td>{{ $arsip->tanggal }}</td>
-                                            <td>{{ $arsip->user->nama }}</td>
-                                            <td>{{ $arsip->klasifikasi->nomor_klasifikasi }} - {{ $arsip->klasifikasi->daftarArsip->nama_daftar }}</td>
-                                            <td>{{ $arsip->lemari->lemari }}</td> <!-- Kolom Lemari -->
-                                            <td>{{ $arsip->rak->rak }}</td> <!-- Kolom Rak -->
-                                            <td>{{ $arsip->folder->folder }}</td> <!-- Kolom Folder -->
+                                            <td>{{ $arsip->sifat }}</td>
+                                            <td>{{ $arsip->jumlah }}</td>
                                             <td class="text-center">
-                                                @if($arsip->status_arsip == 'masuk')
+                                                @if($arsip->jenis_arsip == 'masuk')
+                                                <span class="badge bg-success">{{ strtoupper($arsip->jenis_arsip) }}</span>
+                                                @elseif($arsip->jenis_arsip == 'keluar')
+                                                <span class="badge bg-danger">{{ strtoupper($arsip->jenis_arsip) }}</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ $arsip->keamanan_arsip }}</td>
+                                            <td class="text-center">
+                                                <a href="{{ asset('storage/lampiran/' . basename($arsip->lampiran)) }}" target="_blank" class="thumbnail-link">
+                                                    <img src="{{ asset('storage/lampiran/' . $arsip->lampiran) }}" alt="lampiran Arsip" width="100" class="img-thumbnail"> <!-- Anda bisa mengatur width sesuai kebutuhan -->
+                                            </td>
+                                            <td>{{ $arsip->keterangan }}</td>
+                                            <td>{{ $arsip->tanggal_arsip }}</td>
+                                            <td>{{ $arsip->klasifikasi->nomor_klasifikasi }} - {{ $arsip->klasifikasi->daftarArsip->nama_daftar }}</td>
+                                            <td class="text-center">{{ $arsip->lemari->lemari }}</td> <!-- Kolom Lemari -->
+                                            <td class="text-center">{{ $arsip->rak->rak }}</td> <!-- Kolom Rak -->
+                                            <td class="text-center">{{ $arsip->folder->folder }}</td> <!-- Kolom Folder -->
+                                            <!-- <td>{{ $arsip->updated_at }}</td> -->
+                                            <td class="text-center">
+                                                @if($arsip->status_arsip == 'diproses')
+                                                <span class="badge bg-primary">{{ strtoupper($arsip->status_arsip) }}</span>
+                                                @elseif($arsip->status_arsip == 'selesai')
                                                 <span class="badge bg-success">{{ strtoupper($arsip->status_arsip) }}</span>
-                                                @elseif($arsip->status_arsip == 'keluar')
+                                                @elseif($arsip->status_arsip == 'palsu')
                                                 <span class="badge bg-danger">{{ strtoupper($arsip->status_arsip) }}</span>
-
+                                                @elseif($arsip->status_arsip == 'meragukan')
+                                                <span class="badge bg-warning">{{ strtoupper($arsip->status_arsip) }}</span>
+                                                @elseif($arsip->status_arsip == 'disposisi')
+                                                <span class="badge bg-info">{{ strtoupper($arsip->status_arsip) }}</span>
                                                 @endif
                                             </td>
 
@@ -247,26 +294,32 @@
                                                 </form>
                                             </td>
                                         </tr>
-                                        @endforeach
+                                        @empty
+                                        <tr>
+                                            <td colspan="17" class="text-center">Data Kosong</td>
+                                        </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+                        <!-- Arsip Keluar -->
                         <div class="tab-pane" id="keluar">
                             <div class="table-responsive">
                                 <table class="table datatable table-bordered table-striped custom-table">
                                     <thead>
                                         <tr>
                                             <th rowspan="2">#</th>
-                                            <th rowspan="2">Nomor Berkas</th>
-                                            <th rowspan="2">Uraian Berkas</th>
+                                            <th rowspan="2">Nomor Surat</th>
+                                            <th rowspan="2">Dari</th>
+                                            <th rowspan="2">Kepada</th>
+                                            <th rowspan="2">Sifat</th>
                                             <th rowspan="2">Jumlah</th>
+                                            <th rowspan="2" class="text-center">Jenis Arsip</th> <!-- Ini perbaikannya -->
                                             <th rowspan="2">Keamanan Arsip</th>
-                                            <th rowspan="2">Uraian Arsip</th>
-                                            <th rowspan="2">Gambar</th>
+                                            <th rowspan="2">Lampiran</th>
                                             <th rowspan="2">Keterangan</th>
-                                            <th rowspan="2">Tanggal</th>
-                                            <th rowspan="2">Pengarsip</th>
+                                            <th rowspan="2">Tanggal Arsip</th>
                                             <th rowspan="2">Klasifikasi</th>
                                             <th colspan="3" class="text-center">Lokasi</th>
                                             <th rowspan="2" class="text-center">Status Arsip</th> <!-- Ini perbaikannya -->
@@ -279,32 +332,49 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($arsipsKeluar as $index => $arsip)
+                                        @forelse($arsipsKeluar as $index => $arsip)
                                         <tr>
                                             <td>{{ $arsip->id_arsip }}</td>
-                                            <td>{{ $arsip->nomor_berkas }}</td>
-                                            <td>{{ $arsip->uraian_berkas }}</td>
-                                            <td>{{ $arsip->jumlah }}</td>
-                                            <td>{{ $arsip->keamanan_arsip }}</td>
-                                            <td>{{ $arsip->uraian_arsip }}</td>
-                                            <td class="text-center">
-                                                <a href="{{ asset('storage/gambar/' . basename($arsip->gambar)) }}" target="_blank" class="thumbnail-link">
-                                                    <img src="{{ asset('storage/gambar/' . $arsip->gambar) }}" alt="Gambar Arsip" width="100" class="img-thumbnail"> <!-- Anda bisa mengatur width sesuai kebutuhan -->
+                                            <td>{{ $arsip->nomor_surat }}</td>
+                                            <td>{{ $arsip->dari }}</td>
+                                            <td>
+                                                @foreach ($arsip->users as $user)
+                                                {{ $user->nama }}<br>
+                                                <!-- @if (!$loop->last),@endif -->
+                                                @endforeach
                                             </td>
-
-                                            <td>{{ $arsip->keterangan }}</td>
-                                            <td>{{ $arsip->tanggal }}</td>
-                                            <td>{{ $arsip->user->nama }}</td>
-                                            <td>{{ $arsip->klasifikasi->nomor_klasifikasi }} - {{ $arsip->klasifikasi->daftarArsip->nama_daftar }}</td>
-                                            <td>{{ $arsip->lemari->lemari }}</td> <!-- Kolom Lemari -->
-                                            <td>{{ $arsip->rak->rak }}</td> <!-- Kolom Rak -->
-                                            <td>{{ $arsip->folder->folder }}</td> <!-- Kolom Folder -->
+                                            <td>{{ $arsip->sifat }}</td>
+                                            <td>{{ $arsip->jumlah }}</td>
                                             <td class="text-center">
-                                                @if($arsip->status_arsip == 'masuk')
+                                                @if($arsip->jenis_arsip == 'masuk')
+                                                <span class="badge bg-success">{{ strtoupper($arsip->jenis_arsip) }}</span>
+                                                @elseif($arsip->jenis_arsip == 'keluar')
+                                                <span class="badge bg-danger">{{ strtoupper($arsip->jenis_arsip) }}</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ $arsip->keamanan_arsip }}</td>
+                                            <td class="text-center">
+                                                <a href="{{ asset('storage/lampiran/' . basename($arsip->lampiran)) }}" target="_blank" class="thumbnail-link">
+                                                    <img src="{{ asset('storage/lampiran/' . $arsip->lampiran) }}" alt="lampiran Arsip" width="100" class="img-thumbnail"> <!-- Anda bisa mengatur width sesuai kebutuhan -->
+                                            </td>
+                                            <td>{{ $arsip->keterangan }}</td>
+                                            <td>{{ $arsip->tanggal_arsip }}</td>
+                                            <td>{{ $arsip->klasifikasi->nomor_klasifikasi }} - {{ $arsip->klasifikasi->daftarArsip->nama_daftar }}</td>
+                                            <td class="text-center">{{ $arsip->lemari->lemari }}</td> <!-- Kolom Lemari -->
+                                            <td class="text-center">{{ $arsip->rak->rak }}</td> <!-- Kolom Rak -->
+                                            <td class="text-center">{{ $arsip->folder->folder }}</td> <!-- Kolom Folder -->
+                                            <!-- <td>{{ $arsip->updated_at }}</td> -->
+                                            <td class="text-center">
+                                                @if($arsip->status_arsip == 'diproses')
+                                                <span class="badge bg-primary">{{ strtoupper($arsip->status_arsip) }}</span>
+                                                @elseif($arsip->status_arsip == 'selesai')
                                                 <span class="badge bg-success">{{ strtoupper($arsip->status_arsip) }}</span>
-                                                @elseif($arsip->status_arsip == 'keluar')
+                                                @elseif($arsip->status_arsip == 'palsu')
                                                 <span class="badge bg-danger">{{ strtoupper($arsip->status_arsip) }}</span>
-
+                                                @elseif($arsip->status_arsip == 'meragukan')
+                                                <span class="badge bg-warning">{{ strtoupper($arsip->status_arsip) }}</span>
+                                                @elseif($arsip->status_arsip == 'disposisi')
+                                                <span class="badge bg-info">{{ strtoupper($arsip->status_arsip) }}</span>
                                                 @endif
                                             </td>
 
@@ -319,7 +389,11 @@
                                                 </form>
                                             </td>
                                         </tr>
-                                        @endforeach
+                                        @empty
+                                        <tr>
+                                            <td colspan="17" class="text-center">Data Kosong</td>
+                                        </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>

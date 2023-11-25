@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Rak;
+use App\Models\User;
 use App\Models\Arsip;
 use App\Models\Folder;
-use App\Models\KlasifikasiArsip;
 use App\Models\Lemari;
-use App\Models\Rak;
+use Illuminate\Http\Request;
+use App\Models\KlasifikasiArsip;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Storage;
 
 class ArsipController extends Controller
 {
@@ -15,9 +18,9 @@ class ArsipController extends Controller
     public function index()
     {
         // Di Controller Anda
-        $arsipsMasuk = Arsip::where('status_arsip', 'masuk')->get();
-        $arsipsKeluar = Arsip::where('status_arsip', 'keluar')->get();
-        $arsips = Arsip::all();
+        $arsipsMasuk = Arsip::where('jenis_arsip', 'masuk')->get();
+        $arsipsKeluar = Arsip::where('jenis_arsip', 'keluar')->get();
+        $arsips = Arsip::with('users')->get();
         return view('admin.arsip.index', compact('arsips', 'arsipsMasuk', 'arsipsKeluar'));
     }
 
@@ -27,83 +30,117 @@ class ArsipController extends Controller
         $lemaris = Lemari::all();
         $raks = Rak::all();
         $folders = Folder::all();
-        return view('admin.arsip.create', compact('klasifikasiArsips', 'lemaris', 'raks', 'folders'));
+        $users = User::where('role_id', '4')->get();
+        return view('admin.arsip.create', compact('klasifikasiArsips', 'lemaris', 'raks', 'folders', 'users'));
     }
 
     public function store(Request $request)
     {
         // Validasi data yang masuk
-        $request->validate([
-            'nomor_berkas' => 'required|string',
-            'uraian_berkas' => 'required|string',
+
+        $validatedData = $request->validate([
+            'nomor_surat' => 'required|string|max:50',
             'jumlah' => 'required|integer',
-            'keamanan_arsip' => 'required|string',
-            'uraian_arsip' => 'required|string',
-            'gambar' => 'required|image',
-            'keterangan' => 'required|string',
-            'tanggal' => 'required|date',
-            'lemari_id' => 'required|integer',
-            'rak_id' => 'required|integer',
-            'folder_id' => 'required|integer',
-            'klasifikasi_id' => 'required|integer',
-            'users_id' => 'required|integer',
-            'status_arsip' => 'required'
+            'dari' => 'required|string|max:50',
+            'kepada' => 'required|array',
+            'kepada.*' => 'required|integer|exists:users,id',
+            'sifat' => 'required|in:rahasia,biasa,segera,sangat segera',
+            'jenis_arsip' => 'required|in:masuk,keluar',
+            'keamanan_arsip' => 'required|in:asli,fotocopy',
+            'lampiran' => 'sometimes|file|mimes:jpeg,png,jpg,pdf,docx|max:2048',
+            'keterangan' => 'required|string|max:255',
+            'tanggal_arsip' => 'required|date',
+            'status_arsip' => 'required|in:diproses,selesai,palsu,meragukan,disposisi',
+
+            'klasifikasi_id' => 'required|exists:klasifikasi_arsip,id_klasifikasi_arsip',
+            'lemari_id' => 'required|exists:lemari,id_lemari',
+            'rak_id' => 'required|exists:rak,id_rak',
+            'folder_id' => 'required|exists:folder,id_folder',
         ], [
-            'nomor_berkas.required' => 'Nomor berkas harus diisi.',
-            'uraian_berkas.required' => 'Uraian berkas harus diisi.',
-            'jumlah.required' => 'Jumlah harus diisi.',
+            // Custom error messages
+            'nomor_surat.required' => 'Nomor surat wajib diisi.',
+            'nomor_surat.string' => 'Nomor surat harus berupa teks.',
+            'nomor_surat.max' => 'Nomor surat tidak boleh lebih dari 50 karakter.',
+
+            'jumlah.required' => 'Jumlah wajib diisi.',
             'jumlah.integer' => 'Jumlah harus berupa angka.',
-            'keamanan_arsip.required' => 'Keamanan arsip harus diisi.',
-            'uraian_arsip.required' => 'Uraian arsip harus diisi.',
-            'gambar.required' => 'Gambar harus diunggah.',
-            'gambar.image' => 'Gambar harus berupa file gambar.',
-            'keterangan.required' => 'Keterangan harus diisi.',
-            'tanggal.required' => 'Tanggal harus diisi.',
-            'tanggal.date' => 'Tanggal harus dalam format tanggal yang valid.',
-            'lemari_id.required' => 'Lemari harus dipilih.',
-            'lemari_id.integer' => 'Lemari harus berupa angka.',
-            'rak_id.required' => 'Rak harus dipilih.',
-            'rak_id.integer' => 'Rak harus berupa angka.',
-            'folder_id.required' => 'Folder harus dipilih.',
-            'folder_id.integer' => 'Folder harus berupa angka.',
-            'klasifikasi_id.required' => 'Klasifikasi harus dipilih.',
-            'klasifikasi_id.integer' => 'Klasifikasi harus berupa angka.',
-            'users_id.required' => 'User bermaslaah.',
-            'users_id.integer' => 'User bermasalah.',
-            'status_arsip.required' => 'Status arsip harus dipilih.',
+
+            'dari.required' => 'Field Dari wajib diisi.',
+            'dari.string' => 'Field Dari harus berupa teks.',
+            'dari.max' => 'Field Dari tidak boleh lebih dari 50 karakter.',
+
+            'kepada.required' => 'Field Kepada wajib diisi.',
+            'kepada.array' => 'Field Kepada harus berupa array.',
+
+
+            'sifat.required' => 'Sifat wajib diisi.',
+            'sifat.in' => 'Sifat harus salah satu dari: rahasia, biasa, segera, sangat segera.',
+
+            'jenis_arsip.required' => 'Jenis Arsip wajib diisi.',
+            'jenis_arsip.in' => 'Jenis Arsip harus salah satu dari: masuk, keluar.',
+
+            'keamanan_arsip.required' => 'Keamanan Arsip wajib diisi.',
+            'keamanan_arsip.in' => 'Keamanan Arsip harus salah satu dari: asli, fotocopy.',
+
+            'lampiran.required' => 'Lampiran wajib diisi.',
+
+            'keterangan.required' => 'Keterangan wajib diisi.',
+            'keterangan.string' => 'Keterangan harus berupa teks.',
+            'keterangan.max' => 'Keterangan tidak boleh lebih dari 255 karakter.',
+
+            'tanggal_arsip.required' => 'Tanggal Arsip wajib diisi.',
+            'tanggal_arsip.date' => 'Format tanggal tidak valid.',
+
+            'status_arsip.required' => 'Status Arsip wajib diisi.',
+            'status_arsip.in' => 'Status Arsip harus salah satu dari: diproses, selesai, palsu, meragukan, disposisi.',
+
+            'klasifikasi_id.required' => 'Klasifikasi ID wajib diisi.',
+            'klasifikasi_id.exists' => 'Klasifikasi ID tidak valid.',
+
+            'lemari_id.required' => 'Lemari ID wajib diisi.',
+            'lemari_id.exists' => 'Lemari ID tidak valid.',
+
+            'rak_id.required' => 'Rak ID wajib diisi.',
+            'rak_id.exists' => 'Rak ID tidak valid.',
+
+            'folder_id.required' => 'Folder ID wajib diisi.',
+            'folder_id.exists' => 'Folder ID tidak valid.',
         ]);
 
-
-        // Jika ada file gambar yang diupload
-        if ($request->hasFile('gambar')) {
-            $file = $request->file('gambar');
+        // Jika ada file lampiran yang diupload
+        if ($request->hasFile('lampiran')) {
+            $file = $request->file('lampiran');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/gambar', $filename);
+            $file->storeAs('public/lampiran', $filename);
         } else {
             $filename = null;
         }
 
         // Menyimpan data ke database
         $arsip = new Arsip;
-        $arsip->nomor_berkas = $request->nomor_berkas;
-        $arsip->uraian_berkas = $request->uraian_berkas;
-        $arsip->jumlah = $request->jumlah;
-        $arsip->keamanan_arsip = $request->keamanan_arsip;
-        $arsip->uraian_arsip = $request->uraian_arsip;
-        $arsip->gambar = $filename;
-        $arsip->keterangan = $request->keterangan;
-        $arsip->tanggal = $request->tanggal;
-        $arsip->lemari_id = $request->lemari_id;
-        $arsip->rak_id = $request->rak_id;
-        $arsip->folder_id = $request->folder_id;
-        $arsip->klasifikasi_id = $request->klasifikasi_id;
-        $arsip->users_id = $request->users_id;
-        $arsip->status_arsip = $request->status_arsip;
+        $arsip->nomor_surat = $validatedData['nomor_surat'];
+        $arsip->jumlah = $validatedData['jumlah'];
+        $arsip->dari = $validatedData['dari'];
+        $arsip->sifat = $validatedData['sifat'];
+        $arsip->jenis_arsip = $validatedData['jenis_arsip'];
+        $arsip->keamanan_arsip = $validatedData['keamanan_arsip'];
+        $arsip->lampiran = $filename;
+        $arsip->keterangan = $validatedData['keterangan'];
+        $arsip->tanggal_arsip = $validatedData['tanggal_arsip'];
+        $arsip->status_arsip = $validatedData['status_arsip'];
+
+        $arsip->klasifikasi_id = $validatedData['klasifikasi_id'];
+        $arsip->lemari_id = $validatedData['lemari_id'];
+        $arsip->rak_id = $validatedData['rak_id'];
+        $arsip->folder_id = $validatedData['folder_id'];
         $arsip->save();
+
+        $arsip->users()->attach($request->kepada);
 
         // Redirect ke halaman daftar arsip dengan pesan sukses
         return redirect()->route(getCurrentRoutePrefix() . '.arsip.index')->with('success', 'Arsip berhasil ditambahkan.');
     }
+
 
 
     public function show(string $id)
@@ -121,52 +158,124 @@ class ArsipController extends Controller
         $raks = Rak::all();
         $folders = Folder::all();
         $arsip = Arsip::findOrFail($id);
-        return view('admin.arsip.edit', compact('arsip', 'klasifikasiArsips', 'lemaris', 'raks', 'folders'));
+        $users = User::where('role_id', '4')->get();
+        $selectedUsers = $arsip->users->pluck('id')->toArray();
+        return view('admin.arsip.edit', compact('arsip', 'klasifikasiArsips', 'lemaris', 'raks', 'folders', 'users', 'selectedUsers'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id) // $id bertipe data sesuai dengan tipe id di database
     {
         $arsip = Arsip::findOrFail($id);
-
+        
         $data = $request->validate([
-            'users_id' => 'required|integer',
-            'nomor_berkas' => 'required|string|max:255',
-            'uraian_berkas' => 'required|string|max:255',
+            'nomor_surat' => 'required|string|max:50',
             'jumlah' => 'required|integer',
-            'keamanan_arsip' => 'required|string|max:255',
-            'uraian_arsip' => 'required|string|max:255',
-            'gambar' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'keterangan' => 'required|string',
-            'tanggal' => 'required|date',
-            'status_arsip' => 'required|string|in:masuk,keluar',
-            'lemari_id' => 'required|integer',
-            'rak_id' => 'required|integer',
-            'folder_id' => 'required|integer',
-            'klasifikasi_id' => 'required|integer',
+            'dari' => 'required|string|max:50',
+            'kepada' => 'required|array',
+            'kepada.*' => 'exists:users,id', // Pastikan setiap elemen di array ada di tabel users
+            'sifat' => 'required|in:rahasia,biasa,segera,sangat segera',
+            'jenis_arsip' => 'required|in:masuk,keluar',
+            'keamanan_arsip' => 'required|in:asli,fotocopy',
+            'lampiran' => 'sometimes|file|mimes:jpeg,png,jpg,pdf,docx|max:2048',
+            'keterangan' => 'required|string|max:255',
+            'tanggal_arsip' => 'required|date',
+            'status_arsip' => 'required|in:diproses,selesai,palsu,meragukan,disposisi',
+            'users_id' => 'required|exists:users,id',
+            'klasifikasi_id' => 'required|exists:klasifikasi_arsip,id_klasifikasi_arsip',
+            'lemari_id' => 'required|exists:lemari,id_lemari',
+            'rak_id' => 'required|exists:rak,id_rak',
+            'folder_id' => 'required|exists:folder,id_folder',
+        ], [
+            // Custom error messages
+            'nomor_surat.required' => 'Nomor surat wajib diisi.',
+            'nomor_surat.string' => 'Nomor surat harus berupa teks.',
+            'nomor_surat.max' => 'Nomor surat tidak boleh lebih dari 50 karakter.',
+
+            'jumlah.required' => 'Jumlah wajib diisi.',
+            'jumlah.integer' => 'Jumlah harus berupa angka.',
+
+            'dari.required' => 'Field Dari wajib diisi.',
+            'dari.string' => 'Field Dari harus berupa teks.',
+            'dari.max' => 'Field Dari tidak boleh lebih dari 50 karakter.',
+
+            'kepada.required' => 'Field Kepada wajib diisi.',
+            'kepada.array' => 'Field Kepada harus berupa array.',
+
+            'sifat.required' => 'Sifat wajib diisi.',
+            'sifat.in' => 'Sifat harus salah satu dari: rahasia, biasa, segera, sangat segera.',
+
+            'jenis_arsip.required' => 'Jenis Arsip wajib diisi.',
+            'jenis_arsip.in' => 'Jenis Arsip harus salah satu dari: masuk, keluar.',
+
+            'keamanan_arsip.required' => 'Keamanan Arsip wajib diisi.',
+            'keamanan_arsip.in' => 'Keamanan Arsip harus salah satu dari: asli, fotocopy.',
+
+            'lampiran.required' => 'Lampiran wajib diisi.',
+
+            'keterangan.required' => 'Keterangan wajib diisi.',
+            'keterangan.string' => 'Keterangan harus berupa teks.',
+            'keterangan.max' => 'Keterangan tidak boleh lebih dari 255 karakter.',
+
+            'tanggal_arsip.required' => 'Tanggal Arsip wajib diisi.',
+            'tanggal_arsip.date' => 'Format tanggal tidak valid.',
+
+            'status_arsip.required' => 'Status Arsip wajib diisi.',
+            'status_arsip.in' => 'Status Arsip harus salah satu dari: diproses, selesai, palsu, meragukan, disposisi.',
+
+            'users_id.required' => 'User ID wajib diisi.',
+            'users_id.exists' => 'User ID tidak valid.',
+
+            'klasifikasi_id.required' => 'Klasifikasi ID wajib diisi.',
+            'klasifikasi_id.exists' => 'Klasifikasi ID tidak valid.',
+
+            'lemari_id.required' => 'Lemari ID wajib diisi.',
+            'lemari_id.exists' => 'Lemari ID tidak valid.',
+
+            'rak_id.required' => 'Rak ID wajib diisi.',
+            'rak_id.exists' => 'Rak ID tidak valid.',
+
+            'folder_id.required' => 'Folder ID wajib diisi.',
+            'folder_id.exists' => 'Folder ID tidak valid.',
         ]);
 
-        // Jika ada file gambar yang diupload
-        if ($request->hasFile('gambar')) {
-            // Anda bisa menambahkan logika untuk menghapus gambar lama di sini jika diperlukan
 
-            $file = $request->file('gambar');
+        // Jika ada file lampiran yang diupload
+        if ($request->hasFile('lampiran')) {
+            // Hapus gambar lama jika ada
+            if ($arsip->lampiran) {
+                Storage::delete('public/lampiran/' . $arsip->lampiran);
+            }
+
+            $file = $request->file('lampiran');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/gambar', $filename);
-            $data['gambar'] = $filename; // Menyimpan nama file ke dalam array data
+            $file->storeAs('public/lampiran', $filename);
+            $data['lampiran'] = $filename; // Menyimpan nama file ke dalam array data
         }
 
         $arsip->update($data);
+        // Update relasi kepada, asumsikan relasi many-to-many
+        $arsip->users()->sync($request->kepada);
 
         return redirect()->route(getCurrentRoutePrefix() . '.arsip.index')->with('success', 'Arsip berhasil diperbarui!');
     }
 
 
-
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        $arsip = Arsip::findOrFail($id);
-        $arsip->delete();
+        try {
+            $arsip = Arsip::findOrFail($id);
+            $arsip->users()->detach();
+            $arsip->delete();
 
-        return redirect()->route(getCurrentRoutePrefix() . '.arsip.index')->with('success', 'Arsip berhasil dihapus!');
+            return redirect()->route(getCurrentRoutePrefix() . '.arsip.index')->with('success', 'Arsip berhasil dihapus.');
+        } catch (QueryException $e) {
+            // Cek kode error SQL
+            if ($e->getCode() == 23000) { // Kode untuk constraint violation
+                return redirect()->route(getCurrentRoutePrefix() . '.arsip.index')->with('error', 'Arsip tidak dapat dihapus karena telah disposisikan.');
+            }
+
+            // Handle kesalahan lainnya
+            return redirect()->route(getCurrentRoutePrefix() . '.arsip.index')->with('error', 'Terjadi kesalahan saat menghapus arsip.');
+        }
     }
 }

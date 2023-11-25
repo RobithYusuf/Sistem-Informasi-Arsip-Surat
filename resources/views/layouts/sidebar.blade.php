@@ -1,7 +1,7 @@
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
 
-        <a class="nav-link main-menu-link {{ (request()->is('admin/dashboard') || request()->is('arsiparis/dashboard') || request()->is('pimpinan/dashboard')) ? 'active' : '' }}" href="{{ route(auth()->user()->role->role . '.dashboard') }}">
+        <a class="nav-link main-menu-link {{ (request()->is('admin/dashboard') || request()->is('arsiparis/dashboard') || request()->is('direktur/dashboard')|| request()->is('users/dashboard')) ? 'active' : '' }}" href="{{ route(auth()->user()->role->role . '.dashboard') }}">
             <i class="bi bi-grid"></i>
             <span>Dashboard</span>
         </a>

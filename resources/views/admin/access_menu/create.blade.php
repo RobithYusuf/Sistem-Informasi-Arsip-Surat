@@ -43,8 +43,6 @@
                                 </select>
                             </div>
                         </div>
-
-
                         <!-- Anda bisa menambahkan form untuk submenu dan atribut lainnya di sini -->
 
                         <div class="row mb-3 mb-3-start" style="margin-top: 30px!important;">

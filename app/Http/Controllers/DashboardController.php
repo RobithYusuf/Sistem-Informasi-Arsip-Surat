@@ -17,42 +17,42 @@ class DashboardController extends Controller
         $arsipKeluar = Arsip::where('status_arsip', 'keluar')->count();
 
         $today = Carbon::today();
-        $arsipAllHariIni = Arsip::whereDate('tanggal', $today)
+        $arsipAllHariIni = Arsip::whereDate('tanggal_arsip', $today)
             ->count();
         $currentMonth = Carbon::now()->month;
-        $arsipAllBulanIni = Arsip::whereMonth('tanggal', $currentMonth)
+        $arsipAllBulanIni = Arsip::whereMonth('tanggal_arsip', $currentMonth)
             ->count();
 
         $currentYear = Carbon::now()->year;
-        $arsipAllTahunIni = Arsip::whereYear('tanggal', $currentYear)
+        $arsipAllTahunIni = Arsip::whereYear('tanggal_arsip', $currentYear)
             ->count();
 
 
         $arsipMasukHariIni = Arsip::where('status_arsip', 'masuk')
-            ->whereDate('tanggal', $today)
+            ->whereDate('tanggal_arsip', $today)
             ->count();
         $currentMonth = Carbon::now()->month;
         $arsipMasukBulanIni = Arsip::where('status_arsip', 'masuk')
-            ->whereMonth('tanggal', $currentMonth)
+            ->whereMonth('tanggal_arsip', $currentMonth)
             ->count();
 
         $currentYear = Carbon::now()->year;
         $arsipMasukTahunIni = Arsip::where('status_arsip', 'masuk')
-            ->whereYear('tanggal', $currentYear)
+            ->whereYear('tanggal_arsip', $currentYear)
             ->count();
 
 
         $arsipKeluarHariIni = Arsip::where('status_arsip', 'keluar')
-            ->whereDate('tanggal', $today)
+            ->whereDate('tanggal_arsip', $today)
             ->count();
         $currentMonth = Carbon::now()->month;
         $arsipKeluarBulanIni = Arsip::where('status_arsip', 'keluar')
-            ->whereMonth('tanggal', $currentMonth)
+            ->whereMonth('tanggal_arsip', $currentMonth)
             ->count();
 
         $currentYear = Carbon::now()->year;
         $arsipKeluarTahunIni = Arsip::where('status_arsip', 'keluar')
-            ->whereYear('tanggal', $currentYear)
+            ->whereYear('tanggal_arsip', $currentYear)
             ->count();
 
 
@@ -79,42 +79,42 @@ class DashboardController extends Controller
         $arsipKeluar = Arsip::where('status_arsip', 'keluar')->count();
 
         $today = Carbon::today();
-        $arsipAllHariIni = Arsip::whereDate('tanggal', $today)
+        $arsipAllHariIni = Arsip::whereDate('tanggal_arsip', $today)
             ->count();
         $currentMonth = Carbon::now()->month;
-        $arsipAllBulanIni = Arsip::whereMonth('tanggal', $currentMonth)
+        $arsipAllBulanIni = Arsip::whereMonth('tanggal_arsip', $currentMonth)
             ->count();
 
         $currentYear = Carbon::now()->year;
-        $arsipAllTahunIni = Arsip::whereYear('tanggal', $currentYear)
+        $arsipAllTahunIni = Arsip::whereYear('tanggal_arsip', $currentYear)
             ->count();
 
 
         $arsipMasukHariIni = Arsip::where('status_arsip', 'masuk')
-            ->whereDate('tanggal', $today)
+            ->whereDate('tanggal_arsip', $today)
             ->count();
         $currentMonth = Carbon::now()->month;
         $arsipMasukBulanIni = Arsip::where('status_arsip', 'masuk')
-            ->whereMonth('tanggal', $currentMonth)
+            ->whereMonth('tanggal_arsip', $currentMonth)
             ->count();
 
         $currentYear = Carbon::now()->year;
         $arsipMasukTahunIni = Arsip::where('status_arsip', 'masuk')
-            ->whereYear('tanggal', $currentYear)
+            ->whereYear('tanggal_arsip', $currentYear)
             ->count();
 
 
         $arsipKeluarHariIni = Arsip::where('status_arsip', 'keluar')
-            ->whereDate('tanggal', $today)
+            ->whereDate('tanggal_arsip', $today)
             ->count();
         $currentMonth = Carbon::now()->month;
         $arsipKeluarBulanIni = Arsip::where('status_arsip', 'keluar')
-            ->whereMonth('tanggal', $currentMonth)
+            ->whereMonth('tanggal_arsip', $currentMonth)
             ->count();
 
         $currentYear = Carbon::now()->year;
         $arsipKeluarTahunIni = Arsip::where('status_arsip', 'keluar')
-            ->whereYear('tanggal', $currentYear)
+            ->whereYear('tanggal_arsip', $currentYear)
             ->count();
 
 
@@ -134,53 +134,53 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function pimpinan()
+    public function direktur()
     {
         $totalArsip = Arsip::count();
         $arsipMasuk = Arsip::where('status_arsip', 'masuk')->count();
         $arsipKeluar = Arsip::where('status_arsip', 'keluar')->count();
 
         $today = Carbon::today();
-        $arsipAllHariIni = Arsip::whereDate('tanggal', $today)
+        $arsipAllHariIni = Arsip::whereDate('tanggal_arsip', $today)
             ->count();
         $currentMonth = Carbon::now()->month;
-        $arsipAllBulanIni = Arsip::whereMonth('tanggal', $currentMonth)
+        $arsipAllBulanIni = Arsip::whereMonth('tanggal_arsip', $currentMonth)
             ->count();
 
         $currentYear = Carbon::now()->year;
-        $arsipAllTahunIni = Arsip::whereYear('tanggal', $currentYear)
+        $arsipAllTahunIni = Arsip::whereYear('tanggal_arsip', $currentYear)
             ->count();
 
 
         $arsipMasukHariIni = Arsip::where('status_arsip', 'masuk')
-            ->whereDate('tanggal', $today)
+            ->whereDate('tanggal_arsip', $today)
             ->count();
         $currentMonth = Carbon::now()->month;
         $arsipMasukBulanIni = Arsip::where('status_arsip', 'masuk')
-            ->whereMonth('tanggal', $currentMonth)
+            ->whereMonth('tanggal_arsip', $currentMonth)
             ->count();
 
         $currentYear = Carbon::now()->year;
         $arsipMasukTahunIni = Arsip::where('status_arsip', 'masuk')
-            ->whereYear('tanggal', $currentYear)
+            ->whereYear('tanggal_arsip', $currentYear)
             ->count();
 
 
         $arsipKeluarHariIni = Arsip::where('status_arsip', 'keluar')
-            ->whereDate('tanggal', $today)
+            ->whereDate('tanggal_arsip', $today)
             ->count();
         $currentMonth = Carbon::now()->month;
         $arsipKeluarBulanIni = Arsip::where('status_arsip', 'keluar')
-            ->whereMonth('tanggal', $currentMonth)
+            ->whereMonth('tanggal_arsip', $currentMonth)
             ->count();
 
         $currentYear = Carbon::now()->year;
         $arsipKeluarTahunIni = Arsip::where('status_arsip', 'keluar')
-            ->whereYear('tanggal', $currentYear)
+            ->whereYear('tanggal_arsip', $currentYear)
             ->count();
 
 
-        return view('pimpinan.dashboard.pimpinan', [
+        return view('direktur.dashboard.direktur', [
             'totalArsip' => $totalArsip,
             'arsipMasuk' => $arsipMasuk,
             'arsipKeluar' => $arsipKeluar,
@@ -194,5 +194,10 @@ class DashboardController extends Controller
             'arsipKeluarBulanIni' => $arsipKeluarBulanIni,
             'arsipKeluarTahunIni' => $arsipKeluarTahunIni,
         ]);
+    }
+
+    public function user()
+    {
+        return view('user.dashboard.user');
     }
 }

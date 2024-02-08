@@ -13,7 +13,8 @@ Sistem Informasi Arsip Surat adalah aplikasi web yang dirancang untuk memudahkan
 ## Teknologi yang Digunakan
 
 - Backend: PHP dengan framework Laravel 10
-- Frontend: Bootstrap 5, Jquery + Datatables
+- Frontend: Bootstrap 5,
+- Library: Jquery + Datatables
 - Database: MySQL
 
 ## Screenshoots 

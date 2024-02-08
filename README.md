@@ -17,5 +17,7 @@ Sistem Informasi Arsip Surat adalah aplikasi web yang dirancang untuk memudahkan
 - Database: MySQL
 
 ## Screenshoots 
-<img src="[https://user-images.githubusercontent.com/path/to/screenshot.png](https://i.postimg.cc/44M6PgYz/image.png)https://i.postimg.cc/44M6PgYz/image.png" width="600">
+
+<img src="https://i.postimg.cc/44M6PgYz/image.png" width="600">
+
 

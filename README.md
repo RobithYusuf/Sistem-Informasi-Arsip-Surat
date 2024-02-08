@@ -18,6 +18,6 @@ Sistem Informasi Arsip Surat adalah aplikasi web yang dirancang untuk memudahkan
 
 ## Screenshoots 
 
-<img src="https://i.postimg.cc/44M6PgYz/image.png" width="600">
+<img src="https://i.postimg.cc/44M6PgYz/image.png" width="1080">
 
 

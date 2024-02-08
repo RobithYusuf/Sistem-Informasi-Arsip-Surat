@@ -23,6 +23,7 @@ class KlasifikasiArsipController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'nomor_klasifikasi' => 'required|string|max:255',
             'nama_klasifikasi' => 'required|string|max:255',
@@ -41,6 +42,7 @@ class KlasifikasiArsipController extends Controller
     }
     public function edit(string $id)
     {
+
         $klasifikasiArsip = KlasifikasiArsip::findOrFail($id);
         $arsips = DaftarArsip::all();
         $selectedArsipId = $klasifikasiArsip->daftar_arsip_id;  // Pastikan ini adalah nama kolom yang benar
@@ -56,9 +58,23 @@ class KlasifikasiArsipController extends Controller
             'nomor_klasifikasi' => 'required|string|max:50',
             'nama_klasifikasi' => 'required|string|max:25',
             'daftar_arsip_id' => 'required|integer|exists:daftar_arsip,id_daftar_arsip',
+        ], [
+            'nomor_klasifikasi.required' => 'Kolom nomor klasifikasi harus diisi.',
+            'nomor_klasifikasi.string' => 'Nomor klasifikasi harus berupa teks.',
+            'nomor_klasifikasi.max' => 'Nomor klasifikasi tidak boleh lebih dari :max karakter.',
+
+            'nama_klasifikasi.required' => 'Kolom nama klasifikasi harus diisi.',
+            'nama_klasifikasi.string' => 'Nama klasifikasi harus berupa teks.',
+            'nama_klasifikasi.max' => 'Nama klasifikasi tidak boleh lebih dari :max karakter.',
+
+            'daftar_arsip_id.required' => 'Kolom daftar arsip ID harus diisi.',
+            'daftar_arsip_id.integer' => 'Daftar arsip ID harus berupa angka.',
+            'daftar_arsip_id.exists' => 'Daftar arsip ID tidak valid.',
         ]);
 
+
         $klasifikasiArsip = KlasifikasiArsip::findOrFail($id);
+
         $klasifikasiArsip->update($request->all());
 
         return redirect()->route(getCurrentRoutePrefix() . '.klasifikasi-arsip.index')->with('success', 'Klasifikasi Arsip berhasil diperbarui.');

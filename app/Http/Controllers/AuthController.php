@@ -24,7 +24,7 @@ class AuthController extends Controller
             case 'direktur':
                 return '/direktur/dashboard';
             case 'user':
-                return '/users/dashboard';
+                return '/user/dashboard';
             default:
                 return '/home'; // URL default jika role tidak dikenali
         }

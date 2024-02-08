@@ -26,8 +26,6 @@
         <div class="col-lg-7">
             <div class="card">
                 <div class="card-body">
-
-
                     <h5 class="card-title">Tambah Arsip</h5>
                     @if ($errors->any())
                     <div class="alert alert-danger">
@@ -38,17 +36,18 @@
                         </ul>
                     </div>
                     @endif
-
-
-
                     <form action="{{ route($currentRoutePrefix . '.arsip.store')  }}" method="POST" enctype="multipart/form-data">
                         @csrf
-
-
                         <div class="row mb-3">
                             <label for="nomor_surat" class="col-sm-3 required col-form-label">Nomor Surat</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" name="nomor_surat" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="hal" class="col-sm-3 required col-form-label">Hal</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="hal" required>
                             </div>
                         </div>
 
@@ -59,30 +58,38 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
-                            <label for="dari" class="col-sm-3 required col-form-label">Dari</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" name="dari" required>
+                        <!-- hidden jenis arsip -->
+                        <input type="hidden" name="jenis_arsip" value="{{ $jenis_arsip }}">
+
+                        <!-- Form Dari -->
+                        <div id="formElementsWrapper">
+                            <div class="row mb-3" id="formDariElement">
+                                <label for="formDari" class="col-sm-3 required col-form-label">Dari</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="formDari" name="dari" required>
+                                </div>
+                            </div>
+
+                            <!-- Form Kepada -->
+                            <div class="row mb-4" id="formKepadaElement">
+                                <label for="formKepada" class="col-sm-3 required col-form-label">Kepada</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" id="formKepada" name="kepada[]" multiple>
+                                    @foreach ($users as $index => $user)
+                                    <option value="{{ $user->id }}">{{ $index + 1 }}. {{ $user->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small class="form-text text-muted">Tahan tombol <b>CTRL</b> untuk memilih lebih dari 1 [Multi Select].</small>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="row mb-4">
-                            <label for="kepada" class="col-sm-3 required col-form-label">Kepada</label>
-                            <div class="col-sm-9">
-                                <select class="form-control" id="kepada" name="kepada[]" multiple>
-                                    @foreach ($users as $index => $user)
-                                    <option value="{{ $user->id }}">{{ $index + 1 }}. {{ $user->nama }}</option>
-                                    @endforeach
-                                </select>
-                                <small class="form-text text-muted"> Tahan tombol <b>CTRL</b> untuk memilih lebih dari 1 [Multi Select].</small>
-                            </div>
-                        </div>
 
                         <div class="row mb-3">
                             <label class="col-sm-3 required col-form-label">Sifat Arsip</label>
                             <div class="col-sm-9">
                                 <select class="form-select" name="sifat" aria-label="Default select example">
-                                    <option selected>-- Pilih Sifat Arsip --</option>
+                                    <option disabled selected>-- Pilih Sifat Arsip --</option>
                                     <option value="rahasia">Rahasia</option>
                                     <option value="biasa">Biasa</option>
                                     <option value="segera">Segera</option>
@@ -94,20 +101,10 @@
 
 
                         <div class="row mb-3">
-                            <label for="jenis_arsip" class="col-sm-3 required col-form-label">Jenis Arsip</label>
-                            <div class="col-sm-9">
-                                <select class="form-select" name="jenis_arsip" id="jenis_arsip" required>
-                                    <option value="">-- Pilih Status Arsip --</option>
-                                    <option value="masuk">Masuk</option>
-                                    <option value="keluar">Keluar</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
                             <label class="col-sm-3 required col-form-label">Keamanan Arsip</label>
                             <div class="col-sm-9">
                                 <select class="form-select" name="keamanan_arsip" aria-label="Default select example">
-                                    <option selected>-- Pilih Keamanan Arsip --</option>
+                                    <option disabled selected>-- Pilih Keamanan Arsip --</option>
                                     <option value="asli">Asli</option>
                                     <option value="fotocopy">Fotocopy</option>
                                 </select>
@@ -139,7 +136,7 @@
                             <label for="status_arsip" class="col-sm-3 required col-form-label">Status Arsip</label>
                             <div class="col-sm-9">
                                 <select class="form-select" name="status_arsip" id="status_arsip" required>
-                                    <option value="">-- Pilih Status Arsip --</option>
+                                    <option disabled selected value="">-- Pilih Status Arsip --</option>
                                     <option value="diproses">Diproses</option>
                                     <option value="selesai">Selesai</option>
                                     <option value="palsu">Palsu</option>
@@ -148,7 +145,6 @@
                                 </select>
                             </div>
                         </div>
-
                 </div>
             </div>
         </div>
@@ -162,7 +158,7 @@
                         <label for="lemari_id" class="col-sm-4 required col-form-label">Lemari</label>
                         <div class="col-sm-8">
                             <select class="form-control" name="lemari_id" id="lemari_id" required>
-                                <option value="">-- Pilih Lemari --</option>
+                                <option disabled selected value="">-- Pilih Lemari --</option>
                                 @foreach($lemaris as $lemari)
                                 <option value="{{ $lemari->id_lemari }}">{{ $lemari->lemari }}</option>
                                 @endforeach
@@ -174,7 +170,7 @@
                         <label for="rak_id" class="col-sm-4 required col-form-label">Rak Arsip</label>
                         <div class="col-sm-8">
                             <select class="form-control" name="rak_id" id="rak_id" required>
-                                <option value="">-- Pilih Rak --</option>
+                                <option disabled selected value="">-- Pilih Rak --</option>
                                 @foreach($raks as $rak)
                                 <option value="{{ $rak->id_rak }}">{{ $rak->rak }}</option>
                                 @endforeach
@@ -186,14 +182,13 @@
                         <label for="folder_id" class="col-sm-4 required col-form-label">Folder Arsip</label>
                         <div class="col-sm-8">
                             <select class="form-control" name="folder_id" id="folder_id" required>
-                                <option value="">-- Pilih Folder --</option>
+                                <option disabled selected value="">-- Pilih Folder --</option>
                                 @foreach($folders as $folder)
                                 <option value="{{ $folder->id_folder }}">{{ $folder->folder }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-
 
                 </div>
             </div>
@@ -205,7 +200,7 @@
                         <label for="klasifikasi_id" class="col-sm-4 required col-form-label">Klasifikasi Arsip</label>
                         <div class="col-sm-8">
                             <select class="form-control" name="klasifikasi_id" id="klasifikasi_id" required>
-                                <option value="">-- Pilih Klasifikasi Arsip --</option>
+                                <option disabled selected value="">-- Pilih Klasifikasi Arsip --</option>
                                 @foreach($klasifikasiArsips as $arsip)
                                 <option value="{{ $arsip->id_klasifikasi_arsip }}">{{ $arsip->nomor_klasifikasi }} - {{ $arsip->nama_klasifikasi }}</option>
                                 @endforeach
@@ -214,8 +209,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
         <div class="col-lg-12">
             <div class="row mb-3 mb-3-start">
@@ -228,5 +221,32 @@
         </form>
     </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var jenisArsip = "{{ $jenis_arsip }}"; // Ambil jenis arsip dari server
+
+    if (jenisArsip === 'keluar') {
+        // Ubah label
+        document.querySelector('label[for="formDari"]').textContent = 'Kepada';
+        document.querySelector('label[for="formKepada"]').textContent = 'Dari';
+
+        // Tukar name attributes
+        var formDari = document.getElementById('formDari');
+        var formKepada = document.getElementById('formKepada');
+
+        formDari.name = 'kepada'; // Tetap sebagai string
+        formKepada.name = 'dari[]'; // Sebagai array
+
+        // Pindahkan form 'Dari' ke bawah form 'Kepada'
+        var formWrapper = document.getElementById('formElementsWrapper');
+        formWrapper.appendChild(document.getElementById('formDariElement'));
+    }
+});
+
+</script>
+
+
+
 
 @endsection

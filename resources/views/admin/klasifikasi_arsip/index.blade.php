@@ -28,7 +28,7 @@
                         {{ session('success') }}
                     </div>
                     @endif
-                    <table class="table datatable table-striped">
+                    <table id="datatable-table" class=" table table-bordered table-striped custom-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>

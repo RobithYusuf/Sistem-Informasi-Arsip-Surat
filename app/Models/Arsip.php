@@ -15,10 +15,10 @@ class Arsip extends Model
     protected $primaryKey = 'id_arsip';
 
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'users_id');
-    }
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class, 'users_id');
+    // }
 
     public function klasifikasi()
     {
@@ -45,9 +45,10 @@ class Arsip extends Model
         return $this->hasMany(Disposisi::class, 'arsip_id', 'id_arsip');
     }
 
-    // many to many relationship 
+    // many to many relationship
     public function users()
     {
-        return $this->belongsToMany(User::class, 'arsip_user', 'arsip_id', 'user_id');
+        return $this->belongsToMany(User::class, 'arsip_user', 'arsip_id', 'user_id')
+            ->withPivot('status', 'disposisi_keterangan');
     }
 }

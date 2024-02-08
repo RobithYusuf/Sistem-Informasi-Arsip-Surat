@@ -33,13 +33,16 @@ Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::resource('data-rak', RakController::class);
     Route::resource('data-lemari', LemariController::class);
     Route::resource('data-folder', FolderController::class);
+    Route::get('/arsip/create/{jenis_arsip?}', [ArsipController::class, 'create'])->name('arsip.create');
     Route::resource('arsip', ArsipController::class);
     Route::resource('klasifikasi-arsip', KlasifikasiArsipController::class);
     Route::resource('daftar-arsip', DaftarArsipController::class);
     Route::resource('disposisi', DisposisiController::class);
     Route::resource('users', UsersController::class);
     Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
+    Route::get('/get-laporan-arsip', [LaporanController::class, 'getLaporanArsip'])->name('laporan.arsip');
     Route::resource('laporan', LaporanController::class);
+
 });
 
 Route::middleware(['role:arsiparis'])->prefix('arsiparis')->name('arsiparis.')->group(function () {
@@ -47,19 +50,32 @@ Route::middleware(['role:arsiparis'])->prefix('arsiparis')->name('arsiparis.')->
     Route::resource('data-rak', RakController::class);
     Route::resource('data-lemari', LemariController::class);
     Route::resource('data-folder', FolderController::class);
+    Route::get('/arsip/create/{jenis_arsip?}', [ArsipController::class, 'create'])->name('arsip.create');
     Route::resource('arsip', ArsipController::class);
     Route::resource('klasifikasi-arsip', KlasifikasiArsipController::class);
     Route::resource('daftar-arsip', DaftarArsipController::class);
     Route::resource('disposisi', DisposisiController::class);
+    Route::get('/admin/get-users-for-arsip/{arsipId}', [DisposisiController::class, 'getUsersForArsip'])->name('admin.get-users-for-arsip');
     Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
+    Route::get('/get-laporan-arsip', [LaporanController::class, 'getLaporanArsip'])->name('laporan.arsip');
     Route::resource('laporan', LaporanController::class);
 });
 
 Route::middleware(['role:direktur'])->prefix('direktur')->name('direktur.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'direktur'])->name('dashboard');
+    Route::resource('disposisi', DisposisiController::class);
+    Route::resource('arsip', ArsipController::class);
     Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
+    Route::get('/get-laporan-arsip', [LaporanController::class, 'getLaporanArsip'])->name('laporan.arsip');
     Route::resource('laporan', LaporanController::class);
 });
-Route::middleware(['role:user'])->prefix('users')->name('user.')->group(function () {
+Route::middleware(['role:user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'user'])->name('dashboard');
+    Route::resource('arsip', ArsipController::class);
+    Route::resource('disposisi', DisposisiController::class);
+    Route::get('/disposisi/{id}/accept', [DisposisiController::class, 'accept'])->name('disposisi.accept');
+    Route::post('/disposisi/{id}/decline', [DisposisiController::class, 'decline'])->name('disposisi.decline');
+    Route::get('/arsip/{id}/accept', [ArsipController::class, 'acceptArsip'])->name('arsip.accept');
+    Route::post('/arsip/{id}/decline', [ArsipController::class, 'declineArsip'])->name('arsip.decline');
 });
+Route::get('/arsip-disposisi/kepada/{id}', [DisposisiController::class, 'getUsersForArsip']);

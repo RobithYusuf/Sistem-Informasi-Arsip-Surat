@@ -25,6 +25,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function hasRole($roleName)
+    {
+        return $this->role->role === $roleName;
+    }
+
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id', 'id_role');

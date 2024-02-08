@@ -82,7 +82,7 @@
                     @endif
 
                     <div class="table-responsive">
-                        <table class="table  datatable">
+                        <table id="datatable-table" class="table ">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>

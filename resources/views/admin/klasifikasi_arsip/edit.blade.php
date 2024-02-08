@@ -35,7 +35,8 @@
                     </div>
                     @endif
 
-                    <form action="{{ route($currentRoutePrefix . '.daftar-arsip.update', $klasifikasiArsip) }}" method="POST">
+                    <form action="{{ route($currentRoutePrefix . '.klasifikasi-arsip.update', $klasifikasiArsip->id_klasifikasi_arsip) }}" method="POST">
+
                         @csrf
                         @method('PUT')
 

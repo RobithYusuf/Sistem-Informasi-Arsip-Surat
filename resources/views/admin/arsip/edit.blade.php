@@ -1,7 +1,14 @@
 @extends('layouts.mastertabel')
 @section('title','Edit Arsip')
 @section('content')
-
+<style>
+    .required::after {
+        content: '*';
+        color: red;
+        padding-left: 5px;
+        /* Atur sesuai kebutuhan */
+    }
+</style>
 <div class="pagetitle">
     <h1>Form Edit Arsip</h1>
     <nav>
@@ -15,7 +22,7 @@
 
 <section class="section">
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-7">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Edit Arsip</h5>
@@ -37,28 +44,34 @@
                         <input type="hidden" name="users_id" value="{{ auth()->id() }}">
 
                         <div class="row mb-3">
-                            <label for="nomor_surat" class="col-sm-3 col-form-label">Nomor Surat</label>
+                            <label for="nomor_surat" class="col-sm-3 required col-form-label">Nomor Surat</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" name="nomor_surat" value="{{ $arsip->nomor_surat }}" required>
                             </div>
                         </div>
+                        <div class="row mb-3">
+                            <label for="hal" class="col-sm-3 required col-form-label">Hal</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="hal" value="{{ $arsip->hal }}" required>
+                            </div>
+                        </div>
 
                         <div class="row mb-3">
-                            <label for="jumlah" class="col-sm-3 col-form-label">Jumlah</label>
+                            <label for="jumlah" class="col-sm-3 required col-form-label">Jumlah</label>
                             <div class="col-sm-9">
                                 <input type="number" class="form-control" name="jumlah" value="{{ $arsip->jumlah }}" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
-                            <label for="dari" class="col-sm-3 col-form-label">Dari</label>
+                            <label for="dari" class="col-sm-3 required col-form-label">Dari</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" name="dari" value="{{ $arsip->dari }}" required>
                             </div>
                         </div>
 
                         <div class="row mb-4">
-                            <label for="kepada" class="col-sm-3 required col-form-label">Kepada</label>
+                            <label for="kepada" class="col-sm-3 required required col-form-label">Kepada</label>
                             <div class="col-sm-9">
                                 <select class="form-control" id="kepada" name="kepada[]" multiple>
                                     @foreach ($users as $user)
@@ -70,7 +83,7 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label">Sifat Arsip</label>
+                            <label class="col-sm-3 required col-form-label">Sifat Arsip</label>
                             <div class="col-sm-9">
                                 <select class="form-select" name="sifat" aria-label="Default select example">
                                     <option value="" disabled>-- Pilih Sifat Arsip --</option>
@@ -83,7 +96,7 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="jenis_arsip" class="col-sm-3 col-form-label">Jenis Arsip</label>
+                            <label for="jenis_arsip" class="col-sm-3 required col-form-label">Jenis Arsip</label>
                             <div class="col-sm-9">
                                 <select class="form-select" name="jenis_arsip" id="jenis_arsip">
                                     @php
@@ -100,7 +113,7 @@
 
 
                         <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label">Keamanan Arsip</label>
+                            <label class="col-sm-3 required col-form-label">Keamanan Arsip</label>
                             <div class="col-sm-9">
                                 <select class="form-select" name="keamanan_arsip">
                                     <option value="asli" {{ $arsip->keamanan_arsip == 'asli' ? 'selected' : '' }}>Asli</option>
@@ -129,14 +142,14 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="tanggal_arsip" class="col-sm-3 col-form-label">Tanggal Arsip</label>
+                            <label for="tanggal_arsip" class="col-sm-3 required col-form-label">Tanggal Arsip</label>
                             <div class="col-sm-9">
                                 <input type="date" class="form-control" name="tanggal_arsip" value="{{ $arsip->tanggal_arsip }}" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
-                            <label for="status_arsip" class="col-sm-3 col-form-label">Status Arsip</label>
+                            <label for="status_arsip" class="col-sm-3 required col-form-label">Status Arsip</label>
                             <div class="col-sm-9">
                                 <select class="form-select" name="status_arsip" id="status_arsip">
                                     @php
@@ -155,13 +168,13 @@
         </div>
 
         <!-- Ini adalah bagian col-4 untuk form lokasi -->
-        <div class="col-lg-4">
+        <div class="col-lg-5">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Lokasi Arsip</h5>
 
                     <div class="row mb-3">
-                        <label for="lemari_id" class="col-sm-4 col-form-label">Lemari</label>
+                        <label for="lemari_id" class="col-sm-4 required col-form-label">Lemari</label>
                         <div class="col-sm-8">
                             <select class="form-control" name="lemari_id" id="lemari_id" required>
                                 <option value="">-- Pilih Lemari --</option>
@@ -173,7 +186,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label for="rak_id" class="col-sm-4 col-form-label">Rak Arsip</label>
+                        <label for="rak_id" class="col-sm-4 required col-form-label">Rak Arsip</label>
                         <div class="col-sm-8">
                             <select class="form-control" name="rak_id" id="rak_id" required>
                                 <option value="">-- Pilih Rak --</option>
@@ -185,7 +198,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label for="folder_id" class="col-sm-4 col-form-label">Folder Arsip</label>
+                        <label for="folder_id" class="col-sm-4 required col-form-label">Folder Arsip</label>
                         <div class="col-sm-8">
                             <select class="form-control" name="folder_id" id="folder_id" required>
                                 <option value="">-- Pilih Folder --</option>
@@ -204,7 +217,7 @@
                     <h5 class="card-title">Klasifikasi Arsip</h5>
 
                     <div class="row mb-3">
-                        <label for="klasifikasi_id" class="col-sm-4 col-form-label">Klasifikasi Arsip</label>
+                        <label for="klasifikasi_id" class="col-sm-4 required col-form-label">Klasifikasi Arsip</label>
                         <div class="col-sm-8">
                             <select class="form-control" name="klasifikasi_id" id="klasifikasi_id" required>
                                 <option value="">-- Pilih Klasifikasi Arsip --</option>

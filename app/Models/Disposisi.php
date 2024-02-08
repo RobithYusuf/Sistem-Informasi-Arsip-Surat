@@ -11,11 +11,10 @@ class Disposisi extends Model
 {
     use HasFactory;
 
-
     protected $guarded = ['id_disposisi'];
     protected $table = 'disposisi';
     protected $primaryKey = 'id_disposisi';
-
+    protected $dates = ['tanggal_disposisi'];
     public function arsip()
     {
         return $this->belongsTo(Arsip::class, 'arsip_id', 'id_arsip');
@@ -25,9 +24,10 @@ class Disposisi extends Model
         return $this->belongsTo(User::class, 'arsip_id', 'id_arsip');
     }
 
-    // many to many relationship 
+    // many to many relationship
     public function users()
     {
-        return $this->belongsToMany(User::class, 'disposisi_user', 'disposisi_id', 'user_id');
+        return $this->belongsToMany(User::class, 'disposisi_user', 'disposisi_id', 'user_id')
+            ->withPivot('status', 'disposisi_keterangan');
     }
 }

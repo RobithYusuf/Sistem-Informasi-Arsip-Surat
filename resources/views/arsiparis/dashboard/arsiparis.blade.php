@@ -1,7 +1,14 @@
 @extends('layouts.master')
 @section('title','Dashboard Arsiparis')
 @section('content')
-
+<style>
+    .card-text {
+        font-size: 0.8rem!important;
+        color: #3457A7;
+        margin-top: -1.2rem;
+        font-weight: normal!important;
+    }
+</style>
 
 <div class="pagetitle">
     <h1>Dashboard</h1>
@@ -21,7 +28,7 @@
             <div class="row">
 
                 <!-- Total Arsip Card -->
-                <div class="col-xxl-4 col-md-6">
+                <div class="col-xxl-3 col-md-6">
                     <div class="card info-card">
                         <div class="filter">
                             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -38,7 +45,7 @@
 
                         <div class="card-body">
                             <h5 class="card-title">Total Arsip</h5>
-
+                            <p class="card-text">Jumlah keseluruhan arsip</p>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-archive"></i>
@@ -53,7 +60,7 @@
                 </div><!-- End Total Arsip Card -->
 
                 <!-- Arsip Masuk Card -->
-                <div class="col-xxl-4 col-md-6">
+                <div class="col-xxl-3 col-md-6">
                     <div class="card info-card">
                         <div class="filter">
                             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -69,7 +76,7 @@
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">Arsip Masuk</h5>
-
+                            <p class="card-text">Jumlah keseluruhan arsip Masuk</p>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-box-arrow-in-down"></i>
@@ -84,7 +91,7 @@
                 </div><!-- End Arsip Masuk Card -->
 
                 <!-- Arsip Keluar Card -->
-                <div class="col-xxl-4 col-xl-12">
+                <div class="col-xxl-3 col-xl-12">
                     <div class="card info-card">
 
                         <div class="filter">
@@ -102,13 +109,44 @@
 
                         <div class="card-body">
                             <h5 class="card-title">Arsip Keluar</h5>
-
+                            <p class="card-text">Jumlah keseluruhan arsip Keluar</p>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-box-arrow-in-up"></i>
                                 </div>
                                 <div class="ps-3">
                                     <h6>{{ $arsipKeluar }}</h6>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div><!-- End Arsip Keluar Card -->
+                <div class="col-xxl-3 col-xl-12">
+                    <div class="card info-card">
+
+                        <div class="filter">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                <li class="dropdown-header text-start">
+                                    <h6>Filter</h6>
+                                </li>
+
+                                <li><a class="dropdown-item" href="#">Jumlah | {{ $arsipKeluarHariIni }} | Hari ini</a></li>
+                                <li><a class="dropdown-item" href="#">Jumlah | {{ $arsipKeluarBulanIni }} | Bulan ini</a></li>
+                                <li><a class="dropdown-item" href="#">Jumlah | {{ $arsipKeluarTahunIni }} | Tahun ini</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title">Arsip Disposisi</h5>
+                            <p class="card-text">Jumlah Arsip yang didisposisi</p>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-box-arrow-up-right"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>{{ $disposisiAll }}</h6>
                                 </div>
                             </div>
                         </div>

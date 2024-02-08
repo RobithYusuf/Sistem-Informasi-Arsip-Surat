@@ -2,6 +2,14 @@
 @section('title','Dashboard Admin')
 @section('content')
 
+<style>
+    .card-text {
+        font-size: 0.8rem !important;
+        color: #3457A7;
+        margin-top: -1.2rem;
+        font-weight: normal !important;
+    }
+</style>
 <div class="pagetitle">
     <h1>Dashboard</h1>
     <nav>
@@ -19,101 +27,38 @@
         <div class="col-lg-12">
             <div class="row">
 
-                <!-- Total Arsip Card -->
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card">
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Jumlah | {{ $arsipAllHariIni }} | Hari ini</a></li>
-                                <li><a class="dropdown-item" href="#">Jumlah | {{ $arsipAllBulanIni }} | Bulan ini</a></li>
-                                <li><a class="dropdown-item" href="#">Jumlah | {{ $arsipAllTahunIni }} | Tahun Ini</a></li>
-                            </ul>
-                        </div>
-
                         <div class="card-body">
-                            <h5 class="card-title">Total Arsip</h5>
-
+                            <h5 class="card-title">Total Pengguna</h5>
+                             <p class="card-text">Jumlah keseluruhan users</p>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-archive"></i>
+                                    <i class="bi bi-people"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>{{ $totalArsip }}</h6>
+                                    <h6>{{ $totalUsers }}</h6>
                                 </div>
                             </div>
                         </div>
-
                     </div>
-                </div><!-- End Total Arsip Card -->
-
-                <!-- Arsip Masuk Card -->
+                </div>
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card">
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Jumlah | {{ $arsipMasukHariIni }} | Hari ini</a></li>
-                                <li><a class="dropdown-item" href="#">Jumlah | {{ $arsipMasukBulanIni }} | Bulan ini</a></li>
-                                <li><a class="dropdown-item" href="#">Jumlah | {{ $arsipMasukTahunIni }} | Tahun Ini</a></li>
-                            </ul>
-                        </div>
                         <div class="card-body">
-                            <h5 class="card-title">Arsip Masuk</h5>
-
+                            <h5 class="card-title">Pengguna dengan Role 'User'</h5>
+                            <p class="card-text">Jumlah keseluruhan role 'User'</p>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-box-arrow-in-down"></i>
+                                    <i class="bi bi-person-check"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>{{ $arsipMasuk }}</h6>
+                                    <h6>{{ $totalUsersWithUserRole }}</h6>
                                 </div>
                             </div>
                         </div>
-
                     </div>
-                </div><!-- End Arsip Masuk Card -->
-
-                <!-- Arsip Keluar Card -->
-                <div class="col-xxl-4 col-xl-12">
-                    <div class="card info-card">
-
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Jumlah | {{ $arsipKeluarHariIni }} | Hari ini</a></li>
-                                <li><a class="dropdown-item" href="#">Jumlah | {{ $arsipKeluarBulanIni }} | Bulan ini</a></li>
-                                <li><a class="dropdown-item" href="#">Jumlah | {{ $arsipKeluarTahunIni }} | Tahun ini</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body">
-                            <h5 class="card-title">Arsip Keluar</h5>
-
-                            <div class="d-flex align-items-center">
-                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-box-arrow-in-up"></i>
-                                </div>
-                                <div class="ps-3">
-                                    <h6>{{ $arsipKeluar }}</h6>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div><!-- End Arsip Keluar Card -->
+                </div><!-- End Total Users Card -->
 
             </div>
         </div><!-- End Left side columns -->

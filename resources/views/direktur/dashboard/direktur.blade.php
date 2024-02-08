@@ -2,7 +2,14 @@
 @section('title','Dashboard Pimpinan')
 @section('content')
 
-
+<style>
+    .card-text {
+        font-size: 0.8rem!important;
+        color: #3457A7;
+        margin-top: -1.2rem;
+        font-weight: normal!important;
+    }
+</style>
 <div class="pagetitle">
     <h1>Dashboard</h1>
     <nav>
@@ -38,7 +45,7 @@
 
                         <div class="card-body">
                             <h5 class="card-title">Total Arsip</h5>
-
+                            <p class="card-text">Jumlah keseluruhan arsip</p>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-archive"></i>
@@ -69,7 +76,7 @@
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">Arsip Masuk</h5>
-
+                            <p class="card-text">Jumlah keseluruhan arsip Masuk</p>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-box-arrow-in-down"></i>
@@ -102,7 +109,7 @@
 
                         <div class="card-body">
                             <h5 class="card-title">Arsip Keluar</h5>
-
+                            <p class="card-text">Jumlah keseluruhan arsip Keluar</p>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-box-arrow-in-up"></i>

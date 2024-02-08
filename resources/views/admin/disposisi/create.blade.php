@@ -51,21 +51,18 @@
                         <div class="row mb-3">
                             <label for="arsip_id" class="col-sm-3 required col-form-label">Pilih Arsip</label>
                             <div class="col-sm-9">
-                                <select class="form-select" name="arsip_id" required>
-                                    @foreach($arsips as $arsip)
-                                    <option value="{{ $arsip->id_arsip }}">{{ ucfirst($arsip->nomor_surat) }} ({{ ucfirst($arsip->sifat) }})</option>
+                                <select class="form-select" id="arsip_id" name="arsip_id" required onchange="updateUserList()">
+                                    @foreach($arsips as $index => $arsip)
+                                    <option value="{{ $arsip->id_arsip }}" {{ $index == 0 ? 'selected' : '' }}>
+                                        {{ ucfirst($arsip->nomor_surat) }} ({{ ucfirst($arsip->sifat) }})
+                                    </option>
                                     @endforeach
                                 </select>
 
                             </div>
                         </div>
 
-                        <div class="row mb-3">
-                            <label for="hal" class="col-sm-3 required col-form-label">Hal</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" name="hal" required>
-                            </div>
-                        </div>
+                        
 
                         <div class="row mb-3">
                             <label for="tanggal_disposisi" class="col-sm-3 required col-form-label">Tanggal Disposisi</label>
@@ -73,19 +70,21 @@
                                 <input type="date" class="form-control" name="tanggal_disposisi" value="{{ date('Y-m-d') }}" required>
                             </div>
                         </div>
+                        <!-- ... kode lainnya ... -->
 
                         <div class="row mb-4">
-                            <label class="col-sm-3 required for="kepada_baru" >Kepada Baru</label>
+                            <label class="col-sm-3 required for=" kepada_baru">Kepada Baru</label>
                             <div class="col-sm-9">
-                                <select class="form-control" id="kepada_baru" name="kepada_baru[]" multiple>
+                                <select class="form-control" id="kepada_baru" name="kepada_baru[]" multiple required>
                                     @foreach ($users as $index => $user)
                                     <option value="{{ $user->id }}">{{ $index + 1 }}. {{ $user->nama }}</option>
                                     @endforeach
-
                                 </select>
                                 <small class="form-text text-muted"> Tahan tombol <b>CTRL</b> untuk memilih lebih dari 1 [Multi Select].</small>
                             </div>
                         </div>
+
+                        <!-- ... kode lainnya ... -->
 
                         <div class="row mb-3">
                             <label for="isi" class="col-sm-3 required col-form-label">Isi</label>
@@ -112,6 +111,7 @@
                                     <option value="gandakan">Gandakan</option>
                                     <option value="edarkan">Edarkan</option>
                                     <option value="file">File</option>
+                                    <option value="lainya">Lainya</option>
                                 </select>
                             </div>
                         </div>
@@ -136,5 +136,61 @@
 
                 </div>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Memanggil fungsi pembaruan daftar pengguna saat halaman dimuat
+        updateUserList();
+    });
+
+    function updateUserList() {
+        var arsipId = document.getElementById('arsip_id').value;
+        var url = `/arsip-disposisi/kepada/${arsipId}`;
+
+        fetch(url)
+            .then(handleResponse)
+            .then(updateUserSelect)
+            .catch(handleError);
+    }
+
+    function handleResponse(response) {
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        return response.json();
+    }
+
+    function updateUserSelect(data) {
+        var select = document.getElementById('kepada_baru');
+        select.innerHTML = ''; // Kosongkan select
+
+        if (data.remainingUsers && data.remainingUsers.length > 0) {
+            data.remainingUsers.forEach((user, index) => {
+                var option = createOption(user, index);
+                select.appendChild(option);
+            });
+        } else {
+            select.appendChild(createNoDataOption());
+        }
+    }
+
+    function createOption(user, index) {
+        var option = document.createElement('option');
+        option.value = user.id;
+        option.text = `${index + 1}. ${user.nama}`; // Menambahkan nomor urut
+        return option;
+    }
+
+    function createNoDataOption() {
+        var option = document.createElement('option');
+        option.text = 'Tidak ada data penerima yang bisa dipilih.';
+        return option;
+    }
+
+    function handleError(error) {
+        console.error('Fetch error:', error);
+    }
+</script>
+
 
 @endsection

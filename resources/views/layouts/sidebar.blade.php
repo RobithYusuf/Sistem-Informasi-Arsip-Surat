@@ -5,8 +5,9 @@
             <i class="bi bi-grid"></i>
             <span>Dashboard</span>
         </a>
-
-
+        @if (in_array(auth()->user()->role->role, ['direktur', 'user']))
+        <li class="nav-heading">Menu</li>
+        @endif
 
         @if (auth()->user()->role->role == "admin")
         <li class="nav-heading">Kelola Menu</li>
@@ -34,9 +35,6 @@
         </li>
         @endif
 
-
-
-
         @foreach($menus as $menu)
         @php
         $segment1 = request()->segment(1);
@@ -57,8 +55,6 @@
 
         $menuUrl = url(auth()->user()->role->role . '/' . $menu->url);
         @endphp
-
-
 
         @if($menu->submenus->isEmpty())
 
@@ -94,7 +90,6 @@
 
 
         <li class="nav-heading">Lainya</li>
-
         <ul class="nav flex-column">
             <li class="nav-item">
                 <a class="nav-link" href="/">
@@ -109,7 +104,5 @@
                 </a>
             </li>
         </ul>
-
-
     </ul>
 </aside>

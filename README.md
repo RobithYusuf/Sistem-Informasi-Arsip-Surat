@@ -20,5 +20,5 @@ Sistem Informasi Arsip Surat adalah aplikasi web yang dirancang untuk memudahkan
 ## Screenshoots 
 
 <img src="https://i.postimg.cc/44M6PgYz/image.png" width="1080">
-
+<img src="https://i.postimg.cc/WzYcF7TP/image.png" width="1080">
 

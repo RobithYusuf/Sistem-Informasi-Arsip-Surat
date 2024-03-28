@@ -7,7 +7,7 @@ Sistem Informasi Arsip Surat adalah aplikasi web yang dirancang untuk memudahkan
 - **Pengunggahan Surat**: Pengguna dapat mengunggah surat (masuk dan keluar) dalam format digital (PDF, DOCX, dsb.).
 - **Kategorisasi Surat**: Surat dapat dikategorikan berdasarkan jenis, tanggal, dan pengirim untuk memudahkan manajemen.
 - **Pencarian Cepat**: Fitur pencarian memungkinkan pengguna untuk menemukan surat berdasarkan kata kunci, kategori, atau metadata lainnya.
-- **Manajemen Pengguna**: Sistem mendukung pembuatan akun pengguna dengan level akses yang berbeda, seperti admin, arsiparis, direktur dan users.
+- **Manajemen Pengguna**: Sistem mendukung pembuatan akun pengguna dengan level akses yang berbeda, seperti admin, arsiparis, dan users (pegawai).
 - **Disposisi Surat**: Disposisi surat kepada pengguna untuk users yang berhalangan.
 
 ## Teknologi yang Digunakan
